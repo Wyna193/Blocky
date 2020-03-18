@@ -40,12 +40,24 @@ def generate_goals(num_goals: int) -> List[Goal]:
         - num_goals <= len(COLOUR_LIST)
     """
     # TODO: Implement Me
-    # randomly choose Perimeter or Blob
-    # generate num_goals number of said goal
-    # check that the goals are not of the same colour
-    # put into list
-    # return list of that goal
-    return [PerimeterGoal(COLOUR_LIST[0])]  # FIXME
+    colours, goals = COLOUR_LIST[:], [PerimeterGoal, BlobGoal]
+    random.shuffle(colours)
+    random.shuffle(goals)
+    result = []
+
+    # TT: colour list of identical colours
+    for i in range(num_goals):
+        # choose the first of the randomly generated list
+        chosen_g = goals[0]
+        if not result:
+            g = Goal.__init__(chosen_g, colours[i])
+            result.append(g)
+
+        elif result[i - 1].colour != colours[i]:
+            g = Goal.__init__(chosen_g, colours[i])
+            result.append(g)
+
+    return result
 
 
 def _flatten(block: Block) -> List[List[Tuple[int, int, int]]]:
@@ -99,18 +111,18 @@ class Goal:
 class PerimeterGoal(Goal):
     def score(self, board: Block) -> int:
         # TODO: Implement me
-        return 148  # FIXME
+        pass
 
     def description(self) -> str:
         # TODO: Implement me
-        # 'Get as many blocks of colour ' + {colour} + ' on the perimeter'
-        return 'DESCRIPTION'  # FIXME
+        return f'Get as many blocks of colour {self.colour} on the perimeter' \
+               f'of the board'
 
 
 class BlobGoal(Goal):
     def score(self, board: Block) -> int:
         # TODO: Implement me
-        return 148  # FIXME
+        pass
 
     def _undiscovered_blob_size(self, pos: Tuple[int, int],
                                 board: List[List[Tuple[int, int, int]]],
@@ -137,12 +149,12 @@ class BlobGoal(Goal):
 
     def description(self) -> str:
         # TODO: Implement me
-        # 'Try to get the largest connecting blob of colour ' + {colour}
-        return 'DESCRIPTION'  # FIXME
+        return f'Get the largest *connected* blob of colour {self.colour}'
 
 
 if __name__ == '__main__':
     import python_ta
+
     python_ta.check_all(config={
         'allowed-import-modules': [
             'doctest', 'python_ta', 'random', 'typing', 'block', 'settings',
