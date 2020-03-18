@@ -192,10 +192,10 @@ class Block:
         # use _children_position to get the positions of children
         child_pos_tups = self._children_positions()
         # set the self.block to position
-		self.position = position
+        self.position = position
         # set the children Blocks with positions as appropriate
-		for i in range(len(self.children)):
-			self.children[i].position = child_pos_tups[i]
+        for i in range(len(self.children)):
+            self.children[i].position = child_pos_tups[i]
         # IS THERE EVEN A RETURN??
         return  # FIXME
 
