@@ -50,9 +50,11 @@ def generate_goals(num_goals: int) -> List[Goal]:
         # choose the first of the randomly generated list
         chosen_g = goals[0]
         if not result:
+            # * incorrect instantiation?
             g = Goal.__init__(chosen_g, colours[i])
             result.append(g)
 
+        # check if color already in list
         elif result[i - 1].colour != colours[i]:
             g = Goal.__init__(chosen_g, colours[i])
             result.append(g)
