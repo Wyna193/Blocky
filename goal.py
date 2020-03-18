@@ -40,6 +40,11 @@ def generate_goals(num_goals: int) -> List[Goal]:
         - num_goals <= len(COLOUR_LIST)
     """
     # TODO: Implement Me
+    # randomly choose Perimeter or Blob
+    # generate num_goals number of said goal
+    # check that the goals are not of the same colour
+    # put into list
+    # return list of that goal
     return [PerimeterGoal(COLOUR_LIST[0])]  # FIXME
 
 
@@ -98,6 +103,7 @@ class PerimeterGoal(Goal):
 
     def description(self) -> str:
         # TODO: Implement me
+        # 'Get as many blocks of colour ' + {colour} + ' on the perimeter'
         return 'DESCRIPTION'  # FIXME
 
 
@@ -131,6 +137,7 @@ class BlobGoal(Goal):
 
     def description(self) -> str:
         # TODO: Implement me
+        # 'Try to get the largest connecting blob of colour ' + {colour}
         return 'DESCRIPTION'  # FIXME
 
 
