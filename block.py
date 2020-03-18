@@ -24,6 +24,7 @@ This file contains the Block class, the main data structure used in the game.
 from __future__ import annotations
 from typing import Optional, Tuple, List
 import random
+from blocky import *
 import math
 
 from settings import colour_name, COLOUR_LIST
@@ -219,14 +220,22 @@ class Block:
 
         # TODO: Implement me
         # if smashable:
+        if self.smashable():
         # use blocky's _block_to_squares() -> returns [(colour, position, size)]
-        # use info as appropriate to set children blockies
-        # *use _update_children_positions()
-        # dont forget to make the level one deeper than original block
-        # remember the max_depth is the same as self
+            blockies = self._block_to_squares()
         # set the initial Block's/(self)'s colour to None
-        # else: return False --> not smashable
-        return True  # FIXME
+            self.colour = None
+        # use info as appropriate to set children blockies
+            for i in range(len(blockies)):
+                child = Block(blockies[i][1], blockies[i][2], blockies[i][0],
+                              self.level + 1, self.max_depth)
+                # don't forget to make the level one deeper than original block
+                # remember the max_depth is the same as self
+                self.children.append(child)
+            return True
+        else:
+            return False
+            #not smashable
 
     def swap(self, direction: int) -> bool:
         """Swap the child Blocks of this Block.
