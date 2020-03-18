@@ -49,14 +49,18 @@ def _block_to_squares(board: Block) -> List[Tuple[Tuple[int, int, int],
     The order of the squares does not matter.
     """
     # TODO: Implement me
-    # get level of Block
-    # if level != max_depth:
-    # use random.random to generate num between [0,1)
-    # if num < math.exp(-0.25 * level): divide Block into children
-    # if num > then set Block to random colour from settings.COLOUR_LIST
-    # (colour, position, size) append to lst
-    return []  # FIXME
-
+    # board is a single block
+    if len(board.children) == 0:
+        return [(board.colour, board.position, board.size)]
+    else:
+        # We know that board has children, so recurse
+        lst = [(board.colour, board.position, board.size)]
+        for child in board.children:
+            if len(child.children) == 0:
+                lst.append((child.colour, child.position, child.size))
+            else:
+                lst.append(_block_to_squares(child))
+        return lst
 
 class GameData:
     """

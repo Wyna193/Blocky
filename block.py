@@ -22,12 +22,12 @@ Misha Schwartz, and Jaisie Sin
 This file contains the Block class, the main data structure used in the game.
 """
 from __future__ import annotations
-from typing import Optional, Tuple, List
-import random
-from blocky import *
-import math
 
-from settings import colour_name, COLOUR_LIST
+import random
+from typing import List, Optional, Tuple
+
+from math import exp
+from settings import COLOUR_LIST, colour_name
 
 
 def generate_board(max_depth: int, size: int) -> Block:
@@ -189,16 +189,13 @@ class Block:
         Block.
         """
         # TODO: Implement me
-        # *this directly changes the children of the Block??
+
         # use _children_position to get the positions of children
-        child_pos_tups = self._children_positions()
-        # set the self.block to position
+        child_pos = self._children_positions()
         self.position = position
         # set the children Blocks with positions as appropriate
         for i in range(len(self.children)):
-            self.children[i].position = child_pos_tups[i]
-        # IS THERE EVEN A RETURN??
-        return  # FIXME
+            self.children[i].position = child_pos[i]
 
     def smashable(self) -> bool:
         """Return True iff this block can be smashed.
@@ -219,23 +216,51 @@ class Block:
         """
 
         # TODO: Implement me
-        # if smashable:
-        if self.smashable():
-        # use blocky's _block_to_squares() -> returns [(colour, position, size)]
-            blockies = self._block_to_squares()
-        # set the initial Block's/(self)'s colour to None
-            self.colour = None
-        # use info as appropriate to set children blockies
-            for i in range(len(blockies)):
-                child = Block(blockies[i][1], blockies[i][2], blockies[i][0],
-                              self.level + 1, self.max_depth)
-                # don't forget to make the level one deeper than original block
-                # remember the max_depth is the same as self
-                self.children.append(child)
-            return True
-        else:
+        if not self.smashable():
             return False
-            #not smashable
+
+        else:
+            self.colour = None
+            cp = self._children_positions()
+            child_pos = [cp[1], cp[0], cp[2], cp[3]]
+
+            # Append self.children with 4 blocks
+            for i in range(4):
+                b = Block(child_pos[i], self._child_size(),
+                          random.choice(COLOUR_LIST), self.level + 1,
+                          self.max_depth)
+                self.children.append(b)
+
+            # Determine if each blocky can be smashed further
+            num = random.random()
+            for blocky in self.children:
+                if num < exp(-0.25 * self.level):
+                    # Subdivide this blocky
+                    blocky.smash()
+
+                else:
+                    # Set this blocky's colour to a random one
+                    self.colour = random.choice(COLOUR_LIST)
+            return True
+
+
+        # # if smashable:
+        # if self.smashable():
+        # # use blocky's _block_to_squares() -> returns [(colour, position, size)]
+        #     blockies = self._block_to_squares()
+        # # set the initial Block's/(self)'s colour to None
+        #     self.colour = None
+        # # use info as appropriate to set children blockies
+        #     for i in range(len(blockies)):
+        #         child = Block(blockies[i][1], blockies[i][2], blockies[i][0],
+        #                       self.level + 1, self.max_depth)
+        #         # don't forget to make the level one deeper than original block
+        #         # remember the max_depth is the same as self
+        #         self.children.append(child)
+        #     return True
+        # else:
+        #     return False
+        #     #not smashable
 
     def swap(self, direction: int) -> bool:
         """Swap the child Blocks of this Block.
