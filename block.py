@@ -188,6 +188,10 @@ class Block:
         Block.
         """
         # TODO: Implement me
+        # *this directly changes the children of the Block??
+        # use _children_position to get the list of tups of positions
+        # set the Blocks with positions as appropriate
+        # IS THERE EVEN A RETURN??
         return  # FIXME
 
     def smashable(self) -> bool:
@@ -204,10 +208,19 @@ class Block:
 
         If this Block's level is <max_depth>, do nothing. If this block has
         children, do nothing.
-        
+
         Return True iff the smash was performed.
         """
+
         # TODO: Implement me
+        # if smashable:
+        # use blocky's _block_to_squares() -> returns [(colour, position, size)]
+        # use info as appropriate to set children blockies
+        # *use _update_children_positions()
+        # dont forget to make the level one deeper than original block
+        # remember the max_depth is the same as self
+        # set the initial Block's/(self)'s colour to None
+        # else: return False --> not smashable
         return True  # FIXME
 
     def swap(self, direction: int) -> bool:
@@ -215,12 +228,20 @@ class Block:
 
         If this Block has no children, do nothing. Otherwise, if <direction> is
         1, swap vertically. If <direction> is 0, swap horizontally.
-        
+
         Return True iff the swap was performed.
 
         Precondition: <direction> is either 0 or 1
         """
         # TODO: Implement me
+        # if Block has no children: return False
+        # else: get positions of children in a list(?)
+        # if direction == 1: swap vertically
+        # switch position of first two tups with the last two
+        # change attributes of respective Blocks and return True
+        # if direction == 0: swap horizontally
+        # switch tup 0 and 1 and 2 and 3
+        # change attributes of respective Blocks and return True
         return True  # FIXME
 
     def rotate(self, direction: int) -> bool:
@@ -228,12 +249,20 @@ class Block:
 
         If this Block has no children, do nothing. If <direction> is 1, rotate
         clockwise. If <direction> is 3, rotate counter-clockwise.
-        
+
         Return True iff the rotate was performed.
 
         Precondition: <direction> is either 1 or 3.
         """
         # TODO: Implement me
+        # if no children: return False
+        # get list of tups of position of children
+        # if direction is 1: clockwise
+        # move index 0 to index [-1] of lst
+        # set as appropriate and return True
+        # if direction is 3: counterclockwise
+        # move tup at [-1] to [0]
+        # set positions as appropriate and return True
         return True  # FIXME
 
     def paint(self, colour: Tuple[int, int, int]) -> bool:
@@ -243,6 +272,9 @@ class Block:
         Return True iff this Block's colour was changed.
         """
         # TODO: Implement me
+        # if children ==[] AND level == max_depth AND colour != colour
+        # set colour to colour and return True
+        # else return False
         return True  # FIXME
 
     def combine(self) -> bool:
@@ -267,6 +299,7 @@ class Block:
         Remember that a deep copy has new blocks (not aliases) at every level.
         """
         # TODO: Implement me
+        # THIS PROB HAS RECURSION SO ILL COME BACK TO IT
         pass  # FIXME
 
 
