@@ -54,12 +54,12 @@ def _block_to_squares(board: Block) -> List[Tuple[Tuple[int, int, int],
         return [(board.colour, board.position, board.size)]
     else:
         # We know that board has children, so recurse
-        lst = [(board.colour, board.position, board.size)]
+        lst = []
         for child in board.children:
             if len(child.children) == 0:
                 lst.append((child.colour, child.position, child.size))
             else:
-                lst.append(_block_to_squares(child))
+                lst.extend(_block_to_squares(child))
         return lst
 
 class GameData:
