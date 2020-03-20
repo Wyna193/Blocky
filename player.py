@@ -70,7 +70,25 @@ def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
         - 0 <= level <= max_depth
     """
     # TODO: Implement me
-    return None  # FIXME
+    if block.position == location:
+        if block.level != level:
+            if block.children:
+                if block.children[1].level == level:
+                    return block.children[1]
+                    # The child of block is at level and returned
+                else:
+                    return _get_block(block.children[1],
+                                  block._children_position()[1], level)
+                    # recursively check if the children are at level
+            else:
+                return block
+                # We are returning the deepest level block
+        else:
+            return block
+            # We know that block is at level
+    else:
+        return None
+        # We know the block is not in location
 
 
 class Player:
