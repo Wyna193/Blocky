@@ -54,7 +54,10 @@ def create_players(num_human: int, num_random: int, smart_players: List[int]) \
     for i in range(num_human):
         result.append(HumanPlayer(i, goal[i]))
     # make random players
-    total = num_human - 1
+    if num_human != 0:
+        total = num_human - 1
+    else:
+        total = 0
     if num_random != 0:
         for i in range(num_random):
             # use id as num_humans + i
