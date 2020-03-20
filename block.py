@@ -262,17 +262,17 @@ class Block:
             tr, tl ,bl, br = cp[0], cp[1], cp[2], cp[3]
             # Case 1: Swap Vertically
             if direction == 1:
-                # set swapped position in self.children
+                # set swapped position in self.position
                 c[0].position, c[1].position, c[2].position, \
                 c[3].position = br, bl, tl, tr
-                # set correct order in self.position
+                # set correct order in self.children
                 self.children = [c[3], c[2], c[1], c[0]]
                 return True
             # Case 2: Swap Horizontally
             elif direction == 0:
-                # set correct order in self.position
+                # set correct order in self.children
                 self.children = [c[1], c[0], c[3], c[2]]
-                # set swapped position in self.children
+                # set swapped position in self.position
                 c[0].position, c[1].position, c[2].position, \
                 c[3].position = tl, tr, br, bl
 
