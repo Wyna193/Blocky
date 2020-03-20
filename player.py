@@ -49,7 +49,7 @@ def create_players(num_human: int, num_random: int, smart_players: List[int]) \
     # TODO: Implement Me
     result = []
     # temporary goals to put into players
-    goal = generate_goals(num_human + num_random + len(smart_players)).shuffle
+    goal = generate_goals(num_human + num_random + len(smart_players))
     # make human players
     for i in range(num_human):
         result.append(HumanPlayer(i, goal[i]))
@@ -89,24 +89,36 @@ def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
     """
     # TODO: Implement me
     if block.position == location:
-        if block.level != level:
+        if block.level < level: # we can possibly go deeper
             if block.children:
-                if block.children[1].level == level:
-                    return block.children[1]
-                    # The child of block is at level and returned
-                else:
-                    return _get_block(block.children[1],
-                                  block._children_position()[1], level)
-                    # recursively check if the children are at level
-            else:
-                return block
-                # We are returning the deepest level block
+                _get_block(children[0],)
         else:
             return block
-            # We know that block is at level
+            # block.level <= level of block so block is returned
     else:
         return None
-        # We know the block is not in location
+        # we know this block is not in location
+
+
+    # if block.position == location:
+    #     if block.level != level:
+    #         if block.children:
+    #             if block.children[1].level == level:
+    #                 return block.children[1]
+    #                 # The child of block is at level and returned
+    #             else:
+    #                 return _get_block(block.children[1],
+    #                               block._children_position()[1], level)
+    #                 # recursively check if the children are at level
+    #         else:
+    #             return block
+    #             # We are returning the deepest level block
+    #     else:
+    #         return block
+    #         # We know that block is at level
+    # else:
+    #     return None
+    #     # We know the block is not in location
 
 
 class Player:
@@ -192,8 +204,10 @@ class HumanPlayer(Player):
         If no block is selected by the player, return None.
         """
         mouse_pos = pygame.mouse.get_pos()
-        block = _get_block(board, mouse_pos, self._level)
-
+        # block = _get_block(board, mouse_pos, self._level)
+        block = _get_block(board, mouse_pos, min(self._level, board.max_depth))
+        # this is the proposed change by Mario in Piazza to counter the bug
+        # https://piazza.com/class/k4x6fyq98ktyv?cid=1750
         return block
 
     def process_event(self, event: pygame.event.Event) -> None:
