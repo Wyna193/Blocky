@@ -90,16 +90,47 @@ def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
         - 0 <= level <= max_depth
     """
     # TODO: Implement me
-    if block.position == location:
-        if block.level < level: # we can possibly go deeper
-            if block.children:
-                _get_block(children[0],)
-        else:
+
+    # Base case: level == 0
+    if level == 0:
+        if block.position == location:
             return block
-            # block.level <= level of block so block is returned
-    else:
         return None
-        # we know this block is not in location
+
+    # Recursive case: level >= 1
+    else:
+        if block.children:
+            for blocky in block.children:
+                x1, y1 = location[0], location[1]
+                x2, y2 = blocky.position[0], blocky.position[1]
+
+                # Case 1: we are at level
+                if blocky.level == level:
+                    if block.position == location:
+                        return block
+                    return None
+
+                # Case 2: Check which blocky to recurse on
+                elif x1 in range(x2 + blocky._child_size()) and \
+                        y1 in range(y2 + blocky._child_size()) and \
+                        blocky.max_depth < level:
+                    _get_block(blocky, location, level)
+
+        else:
+            # We know that there is no block at <level>
+            return None
+
+
+            # if block.position == location:
+    #     if block.level < level: # we can possibly go deeper
+    #         if block.children:
+    #             _get_block(children[0],)
+    #     else:
+    #         return block
+    #         # block.level <= level of block so block is returned
+    # else:
+    #     return None
+    #     # we know this block is not in location
 
 
     # if block.position == location:
