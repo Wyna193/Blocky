@@ -253,15 +253,32 @@ class Block:
         Precondition: <direction> is either 0 or 1
         """
         # TODO: Implement me
-        # if Block has no children: return False
-        # else: get positions of children in a list(?)
-        # if direction == 1: swap vertically
-        # switch position of first two tups with the last two
-        # change attributes of respective Blocks and return True
-        # if direction == 0: swap horizontally
-        # switch tup 0 and 1 and 2 and 3
-        # change attributes of respective Blocks and return True
-        return True  # FIXME
+        # Base case: Block has no children
+        if not self.children:
+            return False
+        else:  # block has children and we're swapping them
+            c = self.children
+            cp = self._children_positions() # a list of children's position
+            tr, tl ,bl, br = cp[0], cp[1], cp[2], cp[3]
+            # Case 1: Swap Vertically
+            if direction == 1:
+                # set swapped position in self.children
+                c[0].position, c[1].position, c[2].position, \
+                c[3].position = br, bl, tl, tr
+                # set correct order in self.position
+                self.children = [c[3], c[2], c[1], c[0]]
+                return True
+            # Case 2: Swap Horizontally
+            elif direction == 0:
+                # set correct order in self.position
+                self.children = [c[1], c[0], c[3], c[2]]
+                # set swapped position in self.children
+                c[0].position, c[1].position, c[2].position, \
+                c[3].position = tl, tr, br, bl
+
+                return True
+            else:
+                return False
 
     def rotate(self, direction: int) -> bool:
         """Rotate this Block and all its descendants.
@@ -274,15 +291,35 @@ class Block:
         Precondition: <direction> is either 1 or 3.
         """
         # TODO: Implement me
-        # if no children: return False
-        # get list of tups of position of children
-        # if direction is 1: clockwise
-        # move index 0 to index [-1] of lst
-        # set as appropriate and return True
-        # if direction is 3: counterclockwise
-        # move tup at [-1] to [0]
-        # set positions as appropriate and return True
-        return True  # FIXME
+        # Base case: Block has no children
+        if not self.children:
+            return False
+        else:
+            c = self.children
+            cp = self._children_positions() # a list of children's position
+            tr, tl ,bl, br = cp[0], cp[1], cp[2], cp[3]
+            # Case 1: Clockwise rotation
+            if direction == 1:
+                self.children = [c[1], c[2], c[3], c[0]]
+                # set rotated position
+                c[0].position, c[1].position, c[2].position, \
+                c[3].position = tl, bl, br, tr
+                # recurse on each child of block
+                for child in self.children:
+                    child.rotate(1)
+                return True
+            # Case 2: Counter-clockwise rotation
+            elif direction == 3:
+                self.children = [c[3], c[0], c[1], c[2]]
+                # set rotated position on each child
+                c[0].position, c[1].position, c[2].position, \
+                c[3].position = br, tr, tl, bl
+                # recurse on each child of block
+                for child in self.children:
+                    child.rotate(3)
+                return True
+            else:
+                return False
 
     def paint(self, colour: Tuple[int, int, int]) -> bool:
         """Change this Block's colour iff it is a leaf at a level of max_depth
@@ -291,10 +328,18 @@ class Block:
         Return True iff this Block's colour was changed.
         """
         # TODO: Implement me
-        # if children ==[] AND level == max_depth AND colour != colour
-        # set colour to colour and return True
-        # else return False
-        return True  # FIXME
+        # Base Case: Not at max_depth and not leaf
+        # max_depth cannot have children; if has children, not max
+        if self.level != self.max_depth or self.children:
+            return False
+        else:
+            # We know that it has no children and is at max_depth
+            # Case 1: is at colour
+            if self.colour == colour:
+                return False
+            else:
+                self.colour = colour
+                return True
 
     def combine(self) -> bool:
         """Turn this Block into a leaf based on the majority colour of its
@@ -310,6 +355,18 @@ class Block:
         Return True iff this Block was turned into a leaf node.
         """
         # TODO: Implement me
+        # Base Case: # not at max_depth -1 or has no children
+        if self.level != self.max_depth - 1 and not self.children:
+            return False
+        # block must be at max_depth -1 and have children
+        else:
+            pass
+            # We know this block is at max_depth -1 and has children
+            # get colours and find majority
+            # if no majority: do nothing
+            # if majority: remove children and set block to majority colour
+
+
         return True  # FIXME
 
     def create_copy(self) -> Block:
@@ -324,6 +381,7 @@ class Block:
 
 if __name__ == '__main__':
     import python_ta
+
     python_ta.check_all(config={
         'allowed-import-modules': [
             'doctest', 'python_ta', 'random', 'typing', '__future__', 'math',
