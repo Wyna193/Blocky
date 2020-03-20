@@ -47,8 +47,26 @@ def create_players(num_human: int, num_random: int, smart_players: List[int]) \
     <smart_players> should be applied to each SmartPlayer object, in order.
     """
     # TODO: Implement Me
-    goals = generate_goals(1)  # FIXME
-    return [HumanPlayer(0, goals[0])]  # FIXME
+    result = []
+    # temporary goals to put into players
+    goal = generate_goals(num_human + num_random + len(smart_players)).shuffle
+    # make human players
+    for i in range(num_human):
+        result.append(HumanPlayer(i, goal[i]))
+    # make random players
+    total = num_human - 1
+    for i in range(num_random):
+        # use id as num_humans + i
+        result.append(RandomPlayer(total + i, goal[total + i]))
+    # make smart players
+    total = total + num_random
+    for i in range(len(smart_players)):
+        # use id as num_humans + num_random + i
+        result.append(SmartPlayer(total + i, goal[total + i], smart_players[i]))
+    return result
+
+    # goals = generate_goals(1)  # FIXME
+    # return [HumanPlayer(0, goals[0])]  # FIXME
 
 
 def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
