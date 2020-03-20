@@ -363,11 +363,21 @@ class Block:
             pass
             # We know this block is at max_depth -1 and has children
             # get colours and find majority
-            # if no majority: do nothing
-            # if majority: remove children and set block to majority colour
-
-
-        return True  # FIXME
+            colours = {}
+            for child in self.children:
+                if child.colour not in colours:
+                    colours[child.colour] = 1
+                else:
+                    colours[child.colour] += 1
+            # Case 1: All different colours or tied
+            if len(colours) == 4 or len(colours) == 2:
+                return False
+            # Case 2: There is a majority
+            else:
+                colour = max(colours, key=colours.get())
+                self.children = []
+                self.colour = colour
+                return True  # FIXME
 
     def create_copy(self) -> Block:
         """Return a new Block that is a deep copy of this Block.
