@@ -55,14 +55,16 @@ def create_players(num_human: int, num_random: int, smart_players: List[int]) \
         result.append(HumanPlayer(i, goal[i]))
     # make random players
     total = num_human - 1
-    for i in range(num_random):
-        # use id as num_humans + i
-        result.append(RandomPlayer(total + i, goal[total + i]))
+    if num_random != 0:
+        for i in range(num_random):
+            # use id as num_humans + i
+            result.append(RandomPlayer(total + i, goal[total + i]))
     # make smart players
     total = total + num_random
-    for i in range(len(smart_players)):
-        # use id as num_humans + num_random + i
-        result.append(SmartPlayer(total + i, goal[total + i], smart_players[i]))
+    if len(smart_players) != 0:
+        for i in range(len(smart_players)):
+            # use id as num_humans + num_random + i
+            result.append(SmartPlayer(total + i, goal[total + i], smart_players[i]))
     return result
 
     # goals = generate_goals(1)  # FIXME
