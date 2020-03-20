@@ -47,8 +47,26 @@ def create_players(num_human: int, num_random: int, smart_players: List[int]) \
     <smart_players> should be applied to each SmartPlayer object, in order.
     """
     # TODO: Implement Me
-    goals = generate_goals(1)  # FIXME
-    return [HumanPlayer(0, goals[0])]  # FIXME
+    result = []
+    # temporary goals to put into players
+    goal = generate_goals(num_human + num_random + len(smart_players))
+    # make human players
+    for i in range(num_human):
+        result.append(HumanPlayer(i, goal[i]))
+    # make random players
+    total = num_human - 1
+    for i in range(num_random):
+        # use id as num_humans + i
+        result.append(RandomPlayer(total + i, goal[total + i]))
+    # make smart players
+    total = total + num_random
+    for i in range(len(smart_players)):
+        # use id as num_humans + num_random + i
+        result.append(SmartPlayer(total + i, goal[total + i], smart_players[i]))
+    return result
+
+    # goals = generate_goals(1)  # FIXME
+    # return [HumanPlayer(0, goals[0])]  # FIXME
 
 
 def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
@@ -70,7 +88,68 @@ def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
         - 0 <= level <= max_depth
     """
     # TODO: Implement me
-    return None  # FIXME
+
+    # Base case: level == 0
+    if level == 0:
+        if block.position == location:
+            return block
+        return None
+
+    # Recursive case: level >= 1
+    else:
+        if block.children:
+            for blocky in block.children:
+                x1, y1 = location[0], location[1]
+                x2, y2 = blocky.position[0], blocky.position[1]
+
+                # Case 1: we are at level
+                if blocky.level == level:
+                    if block.position == location:
+                        return block
+                    return None
+
+                # Case 2: Check which blocky to recurse on
+                elif x1 in range(x2 + blocky._child_size()) and \
+                        y1 in range(y2 + blocky._child_size()) and \
+                        blocky.max_depth < level:
+                    _get_block(blocky, location, level)
+
+        else:
+            # We know that there is no block at <level>
+            return None
+
+
+            # if block.position == location:
+    #     if block.level < level: # we can possibly go deeper
+    #         if block.children:
+    #             _get_block(children[0],)
+    #     else:
+    #         return block
+    #         # block.level <= level of block so block is returned
+    # else:
+    #     return None
+    #     # we know this block is not in location
+
+
+    # if block.position == location:
+    #     if block.level != level:
+    #         if block.children:
+    #             if block.children[1].level == level:
+    #                 return block.children[1]
+    #                 # The child of block is at level and returned
+    #             else:
+    #                 return _get_block(block.children[1],
+    #                               block._children_position()[1], level)
+    #                 # recursively check if the children are at level
+    #         else:
+    #             return block
+    #             # We are returning the deepest level block
+    #     else:
+    #         return block
+    #         # We know that block is at level
+    # else:
+    #     return None
+    #     # We know the block is not in location
 
 
 class Player:
@@ -156,8 +235,10 @@ class HumanPlayer(Player):
         If no block is selected by the player, return None.
         """
         mouse_pos = pygame.mouse.get_pos()
-        block = _get_block(board, mouse_pos, self._level)
-
+        # block = _get_block(board, mouse_pos, self._level)
+        block = _get_block(board, mouse_pos, min(self._level, board.max_depth))
+        # this is the proposed change by Mario in Piazza to counter the bug
+        # https://piazza.com/class/k4x6fyq98ktyv?cid=1750
         return block
 
     def process_event(self, event: pygame.event.Event) -> None:

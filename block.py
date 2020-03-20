@@ -221,8 +221,7 @@ class Block:
 
         else:
             self.colour = None
-            cp = self._children_positions()
-            child_pos = [cp[1], cp[0], cp[2], cp[3]]
+            child_pos = self._children_positions()
 
             # Append self.children with 4 blocks
             for i in range(4):
@@ -242,25 +241,6 @@ class Block:
                     # Set this blocky's colour to a random one
                     self.colour = random.choice(COLOUR_LIST)
             return True
-
-
-        # # if smashable:
-        # if self.smashable():
-        # # use blocky's _block_to_squares() -> returns [(colour, position, size)]
-        #     blockies = self._block_to_squares()
-        # # set the initial Block's/(self)'s colour to None
-        #     self.colour = None
-        # # use info as appropriate to set children blockies
-        #     for i in range(len(blockies)):
-        #         child = Block(blockies[i][1], blockies[i][2], blockies[i][0],
-        #                       self.level + 1, self.max_depth)
-        #         # don't forget to make the level one deeper than original block
-        #         # remember the max_depth is the same as self
-        #         self.children.append(child)
-        #     return True
-        # else:
-        #     return False
-        #     #not smashable
 
     def swap(self, direction: int) -> bool:
         """Swap the child Blocks of this Block.
