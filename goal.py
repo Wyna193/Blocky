@@ -42,22 +42,21 @@ def generate_goals(num_goals: int) -> List[Goal]:
     # TODO: Implement Me
     colours, goals = COLOUR_LIST[:], [PerimeterGoal, BlobGoal]
     random.shuffle(colours)
-    random.shuffle(goals)
     result = []
 
     # TT: colour list of identical colours
     for i in range(num_goals):
-        # choose the first of the randomly generated list
-        chosen_g = goals[0]
+        # choose a random goal type
+        chosen_g = random.choice(goals)
         if not result:
             # * incorrect instantiation?
-            g = Goal.__init__(chosen_g, colours[i])
-            result.append(g)
+            Goal.__init__(chosen_g, colours[i])
+            result.append(chosen_g)
 
         # check if color already in list
         elif result[i - 1].colour != colours[i]:
-            g = Goal.__init__(chosen_g, colours[i])
-            result.append(g)
+            Goal.__init__(chosen_g, colours[i])
+            result.append(chosen_g)
 
     return result
 
@@ -113,7 +112,7 @@ class Goal:
 class PerimeterGoal(Goal):
     def score(self, board: Block) -> int:
         # TODO: Implement me
-        pass
+        return 148
 
     def description(self) -> str:
         # TODO: Implement me
@@ -124,7 +123,7 @@ class PerimeterGoal(Goal):
 class BlobGoal(Goal):
     def score(self, board: Block) -> int:
         # TODO: Implement me
-        pass
+        return 148
 
     def _undiscovered_blob_size(self, pos: Tuple[int, int],
                                 board: List[List[Tuple[int, int, int]]],

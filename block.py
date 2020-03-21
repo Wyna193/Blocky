@@ -121,10 +121,6 @@ class Block:
 
     def __str__(self) -> str:
         """Return this Block in a string format.
-
-        >>> block = Block((0, 0), 750, (0, 0, 0), 0, 1)
-        >>> str(block)
-        'Leaf: colour=Black, pos=(0, 0), size=750, level=0\\n'
         """
         if len(self.children) == 0:
             indents = '\t' * self.level
