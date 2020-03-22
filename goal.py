@@ -60,6 +60,17 @@ def generate_goals(num_goals: int) -> List[Goal]:
 
     return result
 
+def _decolumnise(block: Union[List[Tuple],
+                              List[List[Tuple]]]) -> List[Tuple[int, int, int]]:
+    """Return a list representing the raw colours in this <block>, flattening
+    the columns."""
+    lst = []
+    for b in block:
+        if not isinstance(b, list):
+            lst.append(b)
+        else:
+            lst.extend(_decolumnise(b))
+    return lst
 
 def _flatten(block: Block) -> List[List[Tuple[int, int, int]]]:
     """Return a two-dimensional list representing <block> as rows and columns of
@@ -76,8 +87,41 @@ def _flatten(block: Block) -> List[List[Tuple[int, int, int]]]:
     L[0][0] represents the unit cell in the upper left corner of the Block.
     """
     # TODO: Implement me
-    return []  # FIXME
+    # TT: Must test on board with depth >= 3 and diff depths
+    if block.colour is not None:
+        res = []
+        for i in range(2**(block.max_depth - block.level)):
+            cell = []
+            for j in range(2**(block.max_depth - block.level)):
+                cell.append(block.colour)
+            res.append(cell)
+        return res
 
+    else:
+        # Recursive case: block has children
+        size, res = 2**(block.max_depth - block.level), []
+
+        # Reorder them based on the order of the output
+        blockies = block.children[1], block.children[2],\
+                   block.children[0], block.children[3]
+
+        i = 0
+        # Make a column and append it to res
+        while i < 4:
+            # Flatten and take adjacent blockies out of their columns
+            curr, next = _flatten(blockies[i]), _flatten(blockies[i+1])
+            c, n = _decolumnise(curr), _decolumnise(next)
+
+            # Make columns with adjacent top and bottom blockies
+            start, end = 0, size // 2
+            while start < len(c):
+                top, bottom = c[start:end], n[start:end]
+                col = top + bottom
+                res.append(col)
+                start, end = start + size // 2, end + size // 2
+            i += 2
+
+        return res
 
 class Goal:
     """A player goal in the game of Blocky.
@@ -112,7 +156,7 @@ class Goal:
 class PerimeterGoal(Goal):
     def score(self, board: Block) -> int:
         # TODO: Implement me
-        return 148
+        b = _flatten(board)
 
     def description(self) -> str:
         # TODO: Implement me
@@ -123,7 +167,7 @@ class PerimeterGoal(Goal):
 class BlobGoal(Goal):
     def score(self, board: Block) -> int:
         # TODO: Implement me
-        return 148
+        b = _flatten(board)
 
     def _undiscovered_blob_size(self, pos: Tuple[int, int],
                                 board: List[List[Tuple[int, int, int]]],

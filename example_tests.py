@@ -302,6 +302,25 @@ class TestGoal:
 
         assert result == flattened_board_16x16
 
+    def test_block_flatten_2(self, board_16x16, flattened_board_16x16) -> None:
+        """Test that flattening the reference board results in the expected list
+        of colours.
+        """
+        board = Block((0, 0), 750, None, 0, 3)
+
+        # Level 1
+        colours = [None, COLOUR_LIST[2], COLOUR_LIST[1], COLOUR_LIST[3]]
+        set_children(board, colours)
+
+        # Level 2
+        colours = [COLOUR_LIST[0], COLOUR_LIST[1], COLOUR_LIST[1], COLOUR_LIST[3]]
+        set_children(board.children[0], colours)
+
+        result = _flatten(board)
+        assert len(result) == 8
+        for sublist in result:
+            assert len(result) == len(sublist)
+
     def test_blob_goal(self, board_16x16) -> None:
         correct_scores = [
             (COLOUR_LIST[0], 1),

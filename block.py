@@ -314,8 +314,18 @@ class Block:
         Remember that a deep copy has new blocks (not aliases) at every level.
         """
         # TODO: Implement me
-        # THIS PROB HAS RECURSION SO ILL COME BACK TO IT
-        pass  # FIXME
+        if not self.children:
+            return Block(self.position, self.size, self.colour, self.level,
+                  self.max_depth)
+
+        else:
+            b = Block(self.position, self.size, self.colour, self.level,
+                  self.max_depth)
+
+            for bby in self.children:
+                b.children.append(bby.create_copy())
+
+            return b
 
 
 if __name__ == '__main__':
