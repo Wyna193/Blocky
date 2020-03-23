@@ -49,13 +49,19 @@ def generate_goals(num_goals: int) -> List[Goal]:
         # choose a random goal type
         chosen_g = random.choice(goals)
         if not result:
-            # * incorrect instantiation?
-            Goal.__init__(chosen_g, colours[i])
+            if chosen_g == BlobGoal:
+                chosen_g = BlobGoal(colours[i])
+            else:
+                chosen_g = PerimeterGoal(colours[i])
+            # Goal.__init__(chosen_g, colours[i])
             result.append(chosen_g)
 
         # check if color already in list
         elif result[i - 1].colour != colours[i]:
-            Goal.__init__(chosen_g, colours[i])
+            if chosen_g == BlobGoal:
+                chosen_g = BlobGoal(colours[i])
+            else:
+                chosen_g = PerimeterGoal(colours[i])
             result.append(chosen_g)
 
     return result
@@ -182,8 +188,8 @@ class PerimeterGoal(Goal):
 
     def description(self) -> str:
         # TODO: Implement me
-        return f'Get as many blocks of colour {self.colour} on the perimeter' \
-               f'of the board'
+        return f'Get as many blocks of colour {colour_name(self.colour)} on ' \
+               f'the perimeter of the board'
 
 
 class BlobGoal(Goal):
@@ -217,7 +223,8 @@ class BlobGoal(Goal):
 
     def description(self) -> str:
         # TODO: Implement me
-        return f'Get the largest *connected* blob of colour {self.colour}'
+        return f'Get the largest *connected* blob of colour ' \
+               f'{colour_name(self.colour)}'
 
 
 if __name__ == '__main__':
