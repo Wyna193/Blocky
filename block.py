@@ -388,7 +388,7 @@ class Block:
         """
         # TODO: Implement me
         # Base Case: Not at max_depth and not leaf
-        # max_depth cannot have children; if has children, not max
+            # max_depth cannot have children; if has children, not max
         if self.level != self.max_depth or self.children:
             return False
         else:
@@ -415,7 +415,7 @@ class Block:
         """
         # TODO: Implement me
         # Base Case: # not at max_depth -1 or has no children
-        if self.level != self.max_depth - 1 and not self.children:
+        if self.level != self.max_depth - 1 or not self.children:
             return False
         # block must be at max_depth -1 and have children
         else:
@@ -444,8 +444,16 @@ class Block:
         Remember that a deep copy has new blocks (not aliases) at every level.
         """
         # TODO: Implement me
-        # THIS PROB HAS RECURSION SO ILL COME BACK TO IT
-        pass  # FIXME
+        # no aliasing --> always make new blocks
+        copy = Block()
+        copy.position = self.position
+        copy.size = self.size
+        copy.level = self.level
+        copy.max_depth = self.max_depth
+        if self.children:
+            for child in self.children:
+                copy.children.append(child.create_copy())
+        return copy
 
 
 if __name__ == '__main__':
