@@ -440,6 +440,18 @@ class Block:
         Remember that a deep copy has new blocks (not aliases) at every level.
         """
         # TODO: Implement me
+        if not self.children:
+            return Block(self.position, self.size, self.colour, self.level,
+                  self.max_depth)
+
+        else:
+            b = Block(self.position, self.size, self.colour, self.level,
+                  self.max_depth)
+
+            for bby in self.children:
+                b.children.append(bby.create_copy())
+
+            return b
         # no aliasing --> always make new blocks
         copy = Block()
         copy.position = self.position
@@ -450,7 +462,6 @@ class Block:
             for child in self.children:
                 copy.children.append(child.create_copy())
         return copy
-
 
 if __name__ == '__main__':
     import python_ta
