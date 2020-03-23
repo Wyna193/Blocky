@@ -254,31 +254,71 @@ class Block:
         """
         # TODO: Implement me
         # Base case: Block has no children
-        if not self.children:
-            return False
-        else:  # block has children and we're swapping them
-            c = self.children
+        if self.children: # block has children and we're swapping them
             cp = self._children_positions() # a list of children's position
             tr, tl ,bl, br = cp[0], cp[1], cp[2], cp[3]
-            # Case 1: Swap Vertically
+            # Swap Vertically
             if direction == 1:
-                # set swapped position in self.position
-                c[0].position, c[1].position, c[2].position, \
-                c[3].position = br, bl, tl, tr
-                # set correct order in self.children
-                self.children = [c[3], c[2], c[1], c[0]]
+                for block in self.children:
+                    #Case: child has no children --> directly swap
+                    if not block.children:
+                        if block == self.children[0]:
+                            block.position = br
+                        elif block == self.children[1]:
+                            block.position = bl
+                        elif block == self.children[2]:
+                            block.position = tl
+                        else:
+                            block.position = tr
+                    else:
+                        # we know that this block has children
+                        if block == self.children[0]:
+                            block.position = br
+                            block._update_children_positions(br)
+                        elif block == self.children[1]:
+                            block.position = bl
+                            block._update_children_positions(bl)
+                        elif block == self.children[2]:
+                            block.position = tl
+                            block._update_children_positions(tl)
+                        else:
+                            block.position = tr
+                            block._update_children_positions(tr)
+                self.children = [self.children[3], self.children[2],
+                                 self.children[1], self.children[0]]
                 return True
-            # Case 2: Swap Horizontally
-            elif direction == 0:
-                # set correct order in self.children
-                self.children = [c[1], c[0], c[3], c[2]]
-                # set swapped position in self.position
-                c[0].position, c[1].position, c[2].position, \
-                c[3].position = tl, tr, br, bl
-
-                return True
+            # Swap Horizontally
             else:
-                return False
+                for block in self.children:
+                    #Case: child has no children --> directly swap
+                    if not block.children:
+                        if block == self.children[0]:
+                            block.position = tl
+                        elif block == self.children[1]:
+                            block.position = tr
+                        elif block == self.children[2]:
+                            block.position = br
+                        else:
+                            block.position = bl
+                    else:
+                        # we know that this block has children
+                        if block == self.children[0]:
+                            block.position = tl
+                            block._update_children_positions(tl)
+                        elif block == self.children[1]:
+                            block.position = tr
+                            block._update_children_positions(tr)
+                        elif block == self.children[2]:
+                            block.position = br
+                            block._update_children_positions(br)
+                        else:
+                            block.position = bl
+                            block._update_children_positions(bl)
+                self.children = [self.children[1], self.children[0],
+                                 self.children[3], self.children[2]]
+                return True
+        else:
+            return False
 
     def rotate(self, direction: int) -> bool:
         """Rotate this Block and all its descendants.
@@ -291,35 +331,54 @@ class Block:
         Precondition: <direction> is either 1 or 3.
         """
         # TODO: Implement me
-        # Base case: Block has no children
-        if not self.children:
-            return False
-        else:
-            c = self.children
+        if self.children:
             cp = self._children_positions() # a list of children's position
             tr, tl ,bl, br = cp[0], cp[1], cp[2], cp[3]
-            # Case 1: Clockwise rotation
+            # Clockwise rotation
             if direction == 1:
-                self.children = [c[1], c[2], c[3], c[0]]
-                # set rotated position
-                c[0].position, c[1].position, c[2].position, \
-                c[3].position = tl, bl, br, tr
-                # recurse on each child of block
-                for child in self.children:
-                    child.rotate(1)
+                for block in self.children:
+                    # Case 1: Block has no children
+                    if block.colour:
+                    # Directly move the block into position
+                        if block == self.children[0]:
+                            block.position = br
+                        elif block == self.children[1]:
+                            block.position = tr
+                        elif block == self.children[2]:
+                            block.position = tl
+                        else:
+                            block.position = bl
+                    # Case 2: Block has children
+                    else:
+                        block.rotate(direction)
+                self.children = [self.children[1], self.children[2],
+                                 self.children[3], self.children[0]]
                 return True
-            # Case 2: Counter-clockwise rotation
-            elif direction == 3:
-                self.children = [c[3], c[0], c[1], c[2]]
-                # set rotated position on each child
-                c[0].position, c[1].position, c[2].position, \
-                c[3].position = br, tr, tl, bl
-                # recurse on each child of block
-                for child in self.children:
-                    child.rotate(3)
-                return True
+
+            # Counter-clockwise rotation
             else:
-                return False
+                for block in self.children:
+                    # Case 1: Block has no children
+                    if block.colour is not None:
+                    # Directly move the block into position
+                        for block in self.children:
+                            if block == self.children[0]:
+                                block.position = tr
+                            elif block == self.children[1]:
+                                block.position = bl
+                            elif block == self.children[2]:
+                                block.position = br
+                            else:
+                                block.position = tl
+                    # Case 2: Block has children
+                    else:
+                        block.rotate(direction)
+                self.children = [self.children[1], self.children[2],
+                                 self.children[3], self.children[0]]
+                return True
+        else:
+            # Block has no children so nothing is done
+            return False
 
     def paint(self, colour: Tuple[int, int, int]) -> bool:
         """Change this Block's colour iff it is a leaf at a level of max_depth
