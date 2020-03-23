@@ -66,7 +66,6 @@ def generate_goals(num_goals: int) -> List[Goal]:
 
     return result
 
-
 def _decolumnise(block: Union[List[Tuple],
                               List[List[Tuple]]]) -> List[Tuple[int, int, int]]:
     """Return a list representing the raw colours in this <block>, flattening
@@ -78,7 +77,6 @@ def _decolumnise(block: Union[List[Tuple],
         else:
             lst.extend(_decolumnise(b))
     return lst
-
 
 def _flatten(block: Block) -> List[List[Tuple[int, int, int]]]:
     """Return a two-dimensional list representing <block> as rows and columns of
@@ -182,9 +180,7 @@ class PerimeterGoal(Goal):
                     score += 1
                 if b[i][-1] == self.colour:
                     score += 1
-
         return score
-
 
     def description(self) -> str:
         # TODO: Implement me
