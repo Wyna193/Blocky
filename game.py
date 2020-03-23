@@ -141,6 +141,6 @@ if __name__ == '__main__':
     game = create_solitaire_game()
 
     # Run the game for 5 turns
-    game.run_game(5)
+    game.run_game(10)
 
     pygame.quit()
