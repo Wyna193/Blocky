@@ -60,7 +60,6 @@ def generate_goals(num_goals: int) -> List[Goal]:
 
     return result
 
-
 def _flatten(block: Block) -> List[List[Tuple[int, int, int]]]:
     """Return a two-dimensional list representing <block> as rows and columns of
     unit cells.
