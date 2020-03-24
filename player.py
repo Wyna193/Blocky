@@ -151,7 +151,6 @@ def _apply_action(action: Tuple[str, int], blocky: Block) -> bool:
 
 def _get_move(actions: list, block: Block) -> Tuple[str, Optional[int]]:
     """Returns the tuple of action  """
-    works = False
     ra = _random_action(actions)
     p = _apply_action(ra, block)
     if p:
@@ -320,9 +319,10 @@ class RandomPlayer(Player):
         # randomly choose action
         actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, SWAP_HORIZONTAL,
                    SWAP_VERTICAL, SMASH, COMBINE, PAINT]
-        move = _get_move(actions, block)
+        m = _get_move(actions, block)
+        move = _create_move(m, block)
         self._proceed = False  # Must set to False before returning!
-        return (move[0], move[1], block)  # FIXME
+        return move  # FIXME
 
 
 class SmartPlayer(Player):
@@ -332,7 +332,9 @@ class SmartPlayer(Player):
     #   wait.
     # _difficulty:
     #   The number of randomly generated valid moves the player selects the
-    #   highest scoring move from
+    #   highest scoring move from.
+    # ==================== Representation Invariants =====================
+    # _difficulty >= 0
     _proceed: bool
     _difficulty : int
 
@@ -365,9 +367,34 @@ class SmartPlayer(Player):
             return None  # Do not remove
 
         # TODO: Implement Me
+        # get score of current board
+        curr = board.score
+        # makes n amount of random valid moves
 
-        self._proceed = False  # Must set to False before returning!
-        return None  # FIXME
+        a = [] # list of valid actions --> [Tuple[str, Optional[int], Block]]
+        s = []
+        actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, SWAP_HORIZONTAL,
+                   SWAP_VERTICAL, SMASH, COMBINE, PAINT]
+
+        copy = board.create_copy()
+        block = _random_blocky(copy)
+        for n in range(self._difficulty):
+            m = _get_move(actions, block)
+            move = _create_move(m,block)
+            a.append(move)
+        # for each move, find the score of each
+        for i in range(len(a)):
+            s.append(a[i][2].score)
+        # get max score and return move
+        index = s.index(max(s))
+        # if best score is same, pass
+        if max(s) != curr:
+            self._proceed = False  # Must set to False before returning!
+            return a[index]
+        else:
+            p = ('pass', None)
+            self._proceed = False  # Must set to False before returning!
+            return _create_move(p, block)
 
 
 if __name__ == '__main__':
