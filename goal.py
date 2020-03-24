@@ -276,7 +276,6 @@ class BlobGoal(Goal):
         i, j = pos[0], pos[1]
         _max = len(board) - 1
         colour = board[i][j]
-        curr = visited[i][j]
         # check if cell at pos is out of range
         if i not in range(len(board)) or j not in range(len(board)):
             return 0
