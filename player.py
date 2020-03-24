@@ -117,6 +117,47 @@ def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
                 return _get_block(blocky, location, level)
         return None
 
+def _random_blocky(copy: Block) -> Block:
+    """Returns a random block from a copied board. """
+    rx = random.randrange(len(copy))
+    ry = random.randrange(len(copy))
+    rl = random.randrange(0, copy.level)
+    block = _get_block(copy, (rx, ry), rl)
+    return block
+
+def _random_action(lst: list) -> Tuple[str, int]:
+    """ Returns a random action from list. """
+    ra = lst[random.randrange(len(lst))]
+    return ra
+
+def _apply_action(action: Tuple[str, int], blocky: Block) -> bool:
+    """Applies the action to a block and tests its validity."""
+    if action[0] == 'rotate':
+        if action[1] == 1:
+            return blocky.rotate(1)
+        else:
+            return blocky.rotate(3)
+    elif action[0] == 'swap':
+        if action[1] == 0:
+            return blocky.swap(0)
+        else:
+            return blocky.swap(1)
+    elif action[0] == 'smash':
+        return blocky.smash()
+    elif action[0] == 'combine':
+        return blocky.combine()
+    elif action[0] == 'paint':
+        return blocky.paint()
+
+def _get_move(actions: list, block: Block) -> Tuple[str, Optional[int]]:
+    """Returns the tuple of action  """
+    works = False
+    ra = _random_action(actions)
+    p = _apply_action(ra, block)
+    if p:
+        return ra
+    else:
+        _get_move(actions, block)
 
 class Player:
     """A player in the Blocky game.
@@ -249,6 +290,7 @@ class RandomPlayer(Player):
 
     def __init__(self, player_id: int, goal: Goal) -> None:
         # TODO: Implement Me
+        Player.__init__(player_id, goal)
         self._proceed = False
 
     def get_selected_block(self, board: Block) -> Optional[Block]:
@@ -271,9 +313,16 @@ class RandomPlayer(Player):
             return None  # Do not remove
 
         # TODO: Implement Me
-
+        # create copy of the board
+        copy = board.create_copy()
+        # randomly choose block and level in  board
+        block = _random_blocky(copy)
+        # randomly choose action
+        actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, SWAP_HORIZONTAL,
+                   SWAP_VERTICAL, SMASH, COMBINE, PAINT]
+        move = _get_move(actions, block)
         self._proceed = False  # Must set to False before returning!
-        return None  # FIXME
+        return (move[0], move[1], block)  # FIXME
 
 
 class SmartPlayer(Player):
