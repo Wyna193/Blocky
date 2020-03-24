@@ -49,7 +49,7 @@ def create_players(num_human: int, num_random: int, smart_players: List[int]) \
     # TODO: Implement Me
     result = []
     # temporary goals to put into players
-    goals =[]
+    goals = []
     while len(goals) != (num_random + num_human +len(smart_players)):
         g = generate_goals
         if g not in goals:
@@ -130,7 +130,7 @@ def _random_action(lst: list) -> Tuple[str, int]:
     ra = lst[random.randrange(len(lst))]
     return ra
 
-def _apply_action(action: Tuple[str, int], blocky: Block) -> bool:
+def _apply_action(action: Tuple[str, Optional[int]], blocky: Block) -> bool:
     """Applies the action to a block and tests its validity."""
     if action[0] == 'rotate':
         if action[1] == 1:
@@ -146,7 +146,7 @@ def _apply_action(action: Tuple[str, int], blocky: Block) -> bool:
         return blocky.smash()
     elif action[0] == 'combine':
         return blocky.combine()
-    elif action[0] == 'paint':
+    else:
         return blocky.paint()
 
 def _get_move(actions: list, block: Block) -> Tuple[str, Optional[int]]:
@@ -285,6 +285,7 @@ class RandomPlayer(Player):
     # _proceed:
     #   True when the player should make a move, False when the player should
     #   wait.
+    """Computer player that chooses moves at random."""
     _proceed: bool
 
     def __init__(self, player_id: int, goal: Goal) -> None:
@@ -322,7 +323,7 @@ class RandomPlayer(Player):
         m = _get_move(actions, block)
         move = _create_move(m, block)
         self._proceed = False  # Must set to False before returning!
-        return move  # FIXME
+        return move
 
 
 class SmartPlayer(Player):
@@ -335,8 +336,10 @@ class SmartPlayer(Player):
     #   highest scoring move from.
     # ==================== Representation Invariants =====================
     # _difficulty >= 0
+    """ Computer player that chooses a random move that makes the highest
+    increase score. """
     _proceed: bool
-    _difficulty : int
+    _difficulty: int
 
     def __init__(self, player_id: int, goal: Goal, difficulty: int) -> None:
         # TODO: Implement Me
@@ -372,29 +375,33 @@ class SmartPlayer(Player):
         # makes n amount of random valid moves
 
         a = [] # list of valid actions --> [Tuple[str, Optional[int], Block]]
-        s = []
+        s = [] # list of scores in parallel to actions in a
         actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, SWAP_HORIZONTAL,
                    SWAP_VERTICAL, SMASH, COMBINE, PAINT]
 
         copy = board.create_copy()
         block = _random_blocky(copy)
-        for n in range(self._difficulty):
+
+        for _ in range(self._difficulty):
             m = _get_move(actions, block)
-            move = _create_move(m,block)
+            move = _create_move(m, block)
             a.append(move)
-        # for each move, find the score of each
+
         for i in range(len(a)):
             s.append(a[i][2].score)
+
         # get max score and return move
         index = s.index(max(s))
+
         # if best score is same, pass
         if max(s) != curr:
             self._proceed = False  # Must set to False before returning!
             return a[index]
+
         else:
-            p = ('pass', None)
+            block = _apply_action(PASS, block)
             self._proceed = False  # Must set to False before returning!
-            return _create_move(p, block)
+            return _create_move(PASS, block)
 
 
 if __name__ == '__main__':
