@@ -100,23 +100,6 @@ def _grid(block: Block) -> List[List[int]]:
             i += 2
         return res
 
-def _bases(pos: Tuple[int, int], board: List[List[Tuple[int, int, int]]],
-                    visited: List[List[int]]) -> int:
-    """Check surrounding blocks for values in visited."""
-    i, j = pos[0], pos[1]
-    _max = len(board) - 1
-    bl = range(len(board))
-    if pos[0] not in bl  or pos[1] not in bl:
-        return 0
-    elif board[i][j]!= Goal.colour:
-        visited[i][j] = 0
-        return 0
-    else:
-        # Case 1: Cell not yet visited
-        if visited[i][j] == - 1:
-            visited[i][j] = 1
-            return 1
-
 def _decolumnise(block: Union[List[Tuple],
                               List[List[Tuple]]]) -> List[Tuple[int, int, int]]:
     """Return a list representing the raw colours in this <block>, flattening
@@ -243,11 +226,30 @@ class BlobGoal(Goal):
     def score(self, board: Block) -> int:
         # TODO: Implement me
         b = _flatten(board)
-        visited = _grid(board)
-        t = 0
-        for i in range(len(b)):
-            for j in range(len(b)):
-                return self._undiscovered_blob_size((i, j), b, visited)
+        visited = _grid(board.create_copy())
+        count = 0
+        if self._undiscovered_blob_size((pos), board, visited) == 0:
+            pass
+            # stop
+        # if undiscovered blob at j+ 1 == 0: stop
+        else:
+            # undiscovered blob at i + 1 == 1:
+            count += self._undiscovered_blob_size((pos), board, visited)
+            # count += undiscovered blob i + 1
+        return count
+
+    def _visit(self, i: int, j: int, board: List[List[Tuple[int, int, int]]],
+               visited: List[List[int]]) -> int:
+        """ Updates visited as it is used in _undiscovered_blob."""
+        p = visited[i][j]
+        colour = board[i][j]
+        if p == - 1:
+            if colour == self.colour:
+                p = 1
+                self._undiscovered_blob_size((i, j), board, visited)
+                return 1
+        else:
+            return 0
 
     def _undiscovered_blob_size(self, pos: Tuple[int, int],
                                 board: List[List[Tuple[int, int, int]]],
@@ -270,65 +272,27 @@ class BlobGoal(Goal):
         either 0 or 1.
         """
         # TODO: Implement me
+        # use this helper to check the surroundings of pos and whether in blob
         i, j = pos[0], pos[1]
         _max = len(board) - 1
-        # if _bases(pos, board, visited) == 1:
-        count = 1
-        # Leftmost column of board
-        if i == 0:
-            # Top left corner --> look at right and below
-            if j == 0:
-                count += _bases((i + 1, j) ,board, visited)
-                self._undiscovered_blob_size((i + 1, j), board, visited)
-                count += _bases((i , j + 1) ,board, visited)
-                self._undiscovered_blob_size((i, j + 1), board, visited)
-            # Bottom left corner --> look right and above
-            elif j == _max:
-                count += _bases((i + 1, j) ,board, visited)
-                self._undiscovered_blob_size((i + 1, j), board, visited)
-                count += _bases((i, j + 1) ,board, visited)
-                self._undiscovered_blob_size((i, j + 1), board, visited)
-            # Look to right side
-            else:
-                count += _bases((i + 1, j) ,board, visited)
-                self._undiscovered_blob_size((i + 1, j), board, visited)
-        # Rightmost column of board
-        elif i == _max:
-            # Top right corner of board --> look left and below
-            if j == 0:
-                count += _bases((i - 1, j) ,board, visited)
-                self._undiscovered_blob_size((i - 1, j), board, visited)
-                count += _bases((i, j + 1) ,board, visited)
-                self._undiscovered_blob_size((i, j + 1), board, visited)
-            # Bottom right corner of board --> look left and above
-            elif j == _max:
-                count += _bases((i - 1, j) ,board, visited)
-                self._undiscovered_blob_size((i - 1, j), board, visited)
-                count += _bases((i, j - 1) ,board, visited)
-                self._undiscovered_blob_size((i, j - 1), board, visited)
-            # look to left side
-            else:
-                count += _bases((i - 1, j) ,board, visited)
-                self._undiscovered_blob_size((i - 1, j), board, visited)
-        # Top row of board --> look below
-        elif j == 0:
-            count += _bases((i, j + 1) ,board, visited)
-            self._undiscovered_blob_size((i, j + 1), board, visited)
-        # Bottom row of board --> look above
-        elif j == _max:
-            count += _bases((i, j - 1) ,board, visited)
-            self._undiscovered_blob_size((i, j - 1), board, visited)
-        # Inner parts of the board --> check left, right, top, bottom
+        colour = board[i][j]
+        # check if cell at pos is out of range
+        if i not in range(len(board)) or j not in range(len(board)):
+            return 0
+        # check if pos in colour
+        elif colour != self.colour:
+            return 0
         else:
-            count += _bases((i + 1, j) ,board, visited)
-            self._undiscovered_blob_size((i + 1, j), board, visited)
-            count += _bases((i - 1, j) ,board, visited)
-            self._undiscovered_blob_size((i - 1, j), board, visited)
-            count += _bases((i, j + 1) ,board, visited)
-            self._undiscovered_blob_size((i, j + 1), board, visited)
-            count += _bases((i , j - 1) ,board, visited)
-            self._undiscovered_blob_size((i, j - 1), board, visited)
-        return count
+            count = 0
+            while i and j in range(len(board)):
+                while colour == self.colour:
+                    count += self._visit(i, j, board, visited)
+                    self._undiscovered_blob_size((i, j), board, visited)
+                    self._undiscovered_blob_size((i + 1, j), board, visited)
+                    self._undiscovered_blob_size((i - 1, j), board, visited)
+                    self._undiscovered_blob_size((i, j + 1), board, visited)
+                    self._undiscovered_blob_size((i, j - 1), board, visited)
+            return count
 
     def description(self) -> str:
         # TODO: Implement me
