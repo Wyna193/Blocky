@@ -54,8 +54,6 @@ def _update_descendents(block: Block) -> None:
         if blocky.children:
             blocky._update_children_positions(blocky.position)
 
-
-
 class Block:
     """A square Block in the Blocky game, represented as a tree.
 
@@ -245,11 +243,11 @@ class Block:
                     # Set this blocky's colour to a random one
                     self.colour = random.choice(COLOUR_LIST)
             return True
+
     def _swap_vertical(self) -> None:
         """Swaps the contents of block by reflecting on the x axis."""
-        if self.children: # block has children and we're swapping them
-            cp = self._children_positions() # a list of children's position
-            tr, tl ,bl, br = cp[0], cp[1], cp[2], cp[3]
+        cp = self._children_positions() # a list of children's position
+        tr, tl, bl, br = cp[0], cp[1], cp[2], cp[3]
         for block in self.children:
             #Case: child has no children --> directly swap
             if not block.children:
@@ -261,6 +259,7 @@ class Block:
                     block.position = tl
                 else:
                     block.position = tr
+
             else:
                 # we know that this block has children
                 if block == self.children[0]:
@@ -279,46 +278,48 @@ class Block:
                     block.position = tr
                     block._update_children_positions(tr)
                     _update_descendents(block)
+
         # once all the blockies' position are changed, put them in right order
         self.children = [self.children[3], self.children[2],
-                        self.children[1], self.children[0]]
+                         self.children[1], self.children[0]]
 
     def _swap_horizontal(self) -> None:
         """Swaps the contents of block by reflecting on the y axis."""
-        if self.children: # block has children and we're swapping them
-            cp = self._children_positions() # a list of children's position
-            tr, tl ,bl, br = cp[0], cp[1], cp[2], cp[3]
-            for block in self.children:
-                #Case: child has no children --> directly swap
-                if not block.children:
-                    if block == self.children[0]:
-                        block.position = tl
-                    elif block == self.children[1]:
-                        block.position = tr
-                    elif block == self.children[2]:
-                        block.position = br
-                    else:
-                        block.position = bl
+        cp = self._children_positions() # a list of children's position
+        tr, tl ,bl, br = cp[0], cp[1], cp[2], cp[3]
+        for block in self.children:
+            #Case: child has no children --> directly swap
+            if not block.children:
+                if block == self.children[0]:
+                    block.position = tl
+                elif block == self.children[1]:
+                    block.position = tr
+                elif block == self.children[2]:
+                    block.position = br
                 else:
-                    # we know that this block has children
-                    if block == self.children[0]:
-                        block.position = tl
-                        block._update_children_positions(tl)
-                        _update_descendents(block)
-                    elif block == self.children[1]:
-                        block.position = tr
-                        block._update_children_positions(tr)
-                        _update_descendents(block)
-                    elif block == self.children[2]:
-                        block.position = br
-                        block._update_children_positions(br)
-                        _update_descendents(block)
-                    else:
-                        block.position = bl
-                        block._update_children_positions(bl)
-                        _update_descendents(block)
-            self.children = [self.children[1], self.children[0],
-                             self.children[3], self.children[2]]
+                    block.position = bl
+
+            else:
+                # we know that this block has children
+                if block == self.children[0]:
+                    block.position = tl
+                    block._update_children_positions(tl)
+                    _update_descendents(block)
+                elif block == self.children[1]:
+                    block.position = tr
+                    block._update_children_positions(tr)
+                    _update_descendents(block)
+                elif block == self.children[2]:
+                    block.position = br
+                    block._update_children_positions(br)
+                    _update_descendents(block)
+                else:
+                    block.position = bl
+                    block._update_children_positions(bl)
+                    _update_descendents(block)
+
+        self.children = [self.children[1], self.children[0],
+                         self.children[3], self.children[2]]
 
     def swap(self, direction: int) -> bool:
         """Swap the child Blocks of this Block.
@@ -333,8 +334,6 @@ class Block:
         # TODO: Implement me
         # Base case: Block has no children
         if self.children: # block has children and we're swapping them
-            cp = self._children_positions() # a list of children's position
-            tr, tl ,bl, br = cp[0], cp[1], cp[2], cp[3]
             # Swap Vertically
             if direction == 1:
                 self._swap_vertical()
@@ -367,6 +366,7 @@ class Block:
                 _update_descendents(block)
             # recurse to rotate little blockies
             block.rotate(direction)
+
         # once all blockies' are in right position, set right order
         self.children = [self.children[1], self.children[2],
                          self.children[3], self.children[0]]
@@ -391,6 +391,7 @@ class Block:
                 _update_descendents(block)
             # recurse through little blockies
             block.rotate(direction)
+
         self.children = [self.children[1], self.children[2],
                          self.children[3], self.children[0]]
 
@@ -450,14 +451,17 @@ class Block:
         # TODO: Implement me
         if self.level == self.max_depth - 1 and self.children:
             colours = {}
+
             for block in self.children:
                 if colours[block.colour] not in colours:
                     colours[block.colour] = 1
                 else:
                     colours[block.colour] += 1
+
             if len(colours) == 2 or len(colours) == 4:
                 # Two majorities or no majority
                 return False
+
             elif len(colours) == 3 or len(colours) == 1:
                 colour = max(colours)
                 self.children = []
@@ -465,8 +469,6 @@ class Block:
                 return True
         else:
             return False
-
-
 
     def create_copy(self) -> Block:
         """Return a new Block that is a deep copy of this Block.
