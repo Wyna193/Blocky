@@ -29,6 +29,7 @@ from block import Block
 from settings import colour_name, COLOUR_LIST
 
 
+
 def generate_goals(num_goals: int) -> List[Goal]:
     """Return a randomly generated list of goals with length num_goals.
 
@@ -65,6 +66,56 @@ def generate_goals(num_goals: int) -> List[Goal]:
             result.append(chosen_g)
 
     return result
+
+def _grid(block: Block) -> List[List[int]]:
+    """Returns a flattened block with -1 in the position of each cell."""
+    if block.colour is not None:
+        res = []
+        for i in range(2 ** (block.max_depth - block.level)):
+            cell = []
+            for j in range(2 ** (block.max_depth - block.level)):
+                cell.append(-1)
+            res.append(cell)
+        return res
+    else:
+        # Recursive case: block has children
+        size, res = 2 ** (block.max_depth - block.level), []
+
+        # Reorder them based on the order of the output
+        blockies = block.children[1], block.children[2], \
+                   block.children[0], block.children[3]
+        i = 0
+        # Make a column and append it to res
+        while i < 4:
+            # Flatten and take adjacent blockies out of their columns
+            curr, next = _flatten(blockies[i]), _flatten(blockies[i + 1])
+            c, n = _decolumnise(curr), _decolumnise(next)
+            # Make columns with adjacent top and bottom blockies
+            start, end = 0, size // 2
+            while start < len(c):
+                top, bottom = c[start:end], n[start:end]
+                col = top + bottom
+                res.append(col)
+                start, end = start + size // 2, end + size // 2
+            i += 2
+        return res
+
+def _bases(pos: Tuple[int, int], board: List[List[Tuple[int, int, int]]],
+                    visited: List[List[int]]) -> int:
+    """Check surrounding blocks for values in visited."""
+    i, j = pos[0], pos[1]
+    _max = len(board) - 1
+    bl = range(len(board))
+    if pos[0] not in bl  or pos[1] not in bl:
+        return 0
+    elif board[i][j]!= Goal.colour:
+        visited[i][j] = 0
+        return 0
+    else:
+        # Case 1: Cell not yet visited
+        if visited[i][j] == - 1:
+            visited[i][j] = 1
+            return 1
 
 def _decolumnise(block: Union[List[Tuple],
                               List[List[Tuple]]]) -> List[Tuple[int, int, int]]:
@@ -192,7 +243,11 @@ class BlobGoal(Goal):
     def score(self, board: Block) -> int:
         # TODO: Implement me
         b = _flatten(board)
-
+        visited = _grid(board)
+        t = 0
+        for i in range(len(b)):
+            for j in range(len(b)):
+                return self._undiscovered_blob_size((i, j), b, visited)
 
     def _undiscovered_blob_size(self, pos: Tuple[int, int],
                                 board: List[List[Tuple[int, int, int]]],
@@ -215,7 +270,65 @@ class BlobGoal(Goal):
         either 0 or 1.
         """
         # TODO: Implement me
-        pass  # FIXME
+        i, j = pos[0], pos[1]
+        _max = len(board) - 1
+        # if _bases(pos, board, visited) == 1:
+        count = 1
+        # Leftmost column of board
+        if i == 0:
+            # Top left corner --> look at right and below
+            if j == 0:
+                count += _bases((i + 1, j) ,board, visited)
+                self._undiscovered_blob_size((i + 1, j), board, visited)
+                count += _bases((i , j + 1) ,board, visited)
+                self._undiscovered_blob_size((i, j + 1), board, visited)
+            # Bottom left corner --> look right and above
+            elif j == _max:
+                count += _bases((i + 1, j) ,board, visited)
+                self._undiscovered_blob_size((i + 1, j), board, visited)
+                count += _bases((i, j + 1) ,board, visited)
+                self._undiscovered_blob_size((i, j + 1), board, visited)
+            # Look to right side
+            else:
+                count += _bases((i + 1, j) ,board, visited)
+                self._undiscovered_blob_size((i + 1, j), board, visited)
+        # Rightmost column of board
+        elif i == _max:
+            # Top right corner of board --> look left and below
+            if j == 0:
+                count += _bases((i - 1, j) ,board, visited)
+                self._undiscovered_blob_size((i - 1, j), board, visited)
+                count += _bases((i, j + 1) ,board, visited)
+                self._undiscovered_blob_size((i, j + 1), board, visited)
+            # Bottom right corner of board --> look left and above
+            elif j == _max:
+                count += _bases((i - 1, j) ,board, visited)
+                self._undiscovered_blob_size((i - 1, j), board, visited)
+                count += _bases((i, j - 1) ,board, visited)
+                self._undiscovered_blob_size((i, j - 1), board, visited)
+            # look to left side
+            else:
+                count += _bases((i - 1, j) ,board, visited)
+                self._undiscovered_blob_size((i - 1, j), board, visited)
+        # Top row of board --> look below
+        elif j == 0:
+            count += _bases((i, j + 1) ,board, visited)
+            self._undiscovered_blob_size((i, j + 1), board, visited)
+        # Bottom row of board --> look above
+        elif j == _max:
+            count += _bases((i, j - 1) ,board, visited)
+            self._undiscovered_blob_size((i, j - 1), board, visited)
+        # Inner parts of the board --> check left, right, top, bottom
+        else:
+            count += _bases((i + 1, j) ,board, visited)
+            self._undiscovered_blob_size((i + 1, j), board, visited)
+            count += _bases((i - 1, j) ,board, visited)
+            self._undiscovered_blob_size((i - 1, j), board, visited)
+            count += _bases((i, j + 1) ,board, visited)
+            self._undiscovered_blob_size((i, j + 1), board, visited)
+            count += _bases((i , j - 1) ,board, visited)
+            self._undiscovered_blob_size((i, j - 1), board, visited)
+        return count
 
     def description(self) -> str:
         # TODO: Implement me
