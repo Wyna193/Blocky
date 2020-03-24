@@ -290,7 +290,7 @@ class RandomPlayer(Player):
 
     def __init__(self, player_id: int, goal: Goal) -> None:
         # TODO: Implement Me
-        Player.__init__(player_id, goal)
+        Player.__init__(self, player_id, goal)
         self._proceed = False
 
     def get_selected_block(self, board: Block) -> Optional[Block]:
@@ -330,10 +330,16 @@ class SmartPlayer(Player):
     # _proceed:
     #   True when the player should make a move, False when the player should
     #   wait.
+    # _difficulty:
+    #   The number of randomly generated valid moves the player selects the
+    #   highest scoring move from
     _proceed: bool
+    _difficulty : int
 
     def __init__(self, player_id: int, goal: Goal, difficulty: int) -> None:
         # TODO: Implement Me
+        Player.__init__(self, player_id, goal)
+        self._difficulty = difficulty
         self._proceed = False
 
     def get_selected_block(self, board: Block) -> Optional[Block]:
