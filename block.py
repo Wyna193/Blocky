@@ -425,19 +425,14 @@ class Block:
         Return True iff this Block's colour was changed.
         """
         # TODO: Implement me
-        # Base Case: Not at max_depth and not leaf
-            # max_depth cannot have children; if has children, not max
-        if self.level != self.max_depth or self.children:
-            return False
-        else:
-            # We know that it has no children and is at max_depth
-            # Case 1: is at colour
+        if self.level == self.max_depth and not self.children:
             if self.colour == colour:
                 return False
             else:
                 self.colour = colour
                 return True
-
+        else:
+            return False
 
     def combine(self) -> bool:
         """Turn this Block into a leaf based on the majority colour of its
@@ -453,29 +448,25 @@ class Block:
         Return True iff this Block was turned into a leaf node.
         """
         # TODO: Implement me
-        # Base Case: # not at max_depth -1 or has no children
-        if self.level != self.max_depth - 1 or not self.children:
-            return False
-        # block must be at max_depth -1 and have children
-        else:
-            pass
-            # We know this block is at max_depth -1 and has children
-            # get colours and find majority
+        if self.level == self.max_depth - 1 and self.children:
             colours = {}
-            for child in self.children:
-                if child.colour not in colours:
-                    colours[child.colour] = 1
+            for block in self.children:
+                if colours[block.colour] not in colours:
+                    colours[block.colour] = 1
                 else:
-                    colours[child.colour] += 1
-            # Case 1: All different colours or tied
-            if len(colours) == 4 or len(colours) == 2:
+                    colours[block.colour] += 1
+            if len(colours) == 2 or len(colours) == 4:
+                # Two majorities or no majority
                 return False
-            # Case 2: There is a majority
-            else:
-                colour = max(colours, key=colours.get())
+            elif len(colours) == 3 or len(colours) == 1:
+                colour = max(colours)
                 self.children = []
                 self.colour = colour
-                return True  # FIXME
+                return True
+        else:
+            return False
+
+
 
     def create_copy(self) -> Block:
         """Return a new Block that is a deep copy of this Block.
@@ -495,12 +486,7 @@ class Block:
                 b.children.append(bby.create_copy())
 
             return b
-        # no aliasing --> always make new blocks
-        copy = Block(self.position, self.size, self.level, self.max_depth)
-        if self.children:
-            for child in self.children:
-                copy.children.append(child.create_copy())
-        return copy
+
 
 if __name__ == '__main__':
     import python_ta
