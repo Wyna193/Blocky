@@ -195,6 +195,8 @@ class Goal:
 
 class PerimeterGoal(Goal):
     def score(self, board: Block) -> int:
+        """Returns the number of blocks of the target colour that are in the
+        perimeter of the board."""
         # TODO: Implement me
         b = _flatten(board)
         score = 0
@@ -223,6 +225,8 @@ class PerimeterGoal(Goal):
 
 class BlobGoal(Goal):
     def score(self, board: Block) -> int:
+        """Returns the score of the number of target coloured blocks in larger
+        connected blocks of the same colour."""
         # TODO: Implement me
         b = board.create_copy()
         b = _flatten(b)
@@ -244,23 +248,26 @@ class BlobGoal(Goal):
         #     # undiscovered blob at i + 1 == 1:
         #     count += self._undiscovered_blob_size((pos), board, visited)
         #     # count += undiscovered blob i + 1
-        return count
 
     def _visit(self, i: int, j: int, board: List[List[Tuple[int, int, int]]],
-               visited: List[List[int]]) -> int:
+               visited: List[List[int]]) ->  int:
         """ Updates visited as it is used in _undiscovered_blob."""
         p = visited[i][j]
         colour = board[i][j]
         if p == - 1 and self.colour == colour:
-            p = 1
+            visited[i][j] = 1
             return 1
         else:
-            p = 0
+            visited[i][j] = 0
             return 0
 
     def _corner_check(self, total: int, pos: Tuple[int, int],
-                    board: List[List[Tuple[int, int, int]]],
-                    visited: List[List[int]]) -> Tuple[bool, int]:
+                      board: List[List[Tuple[int, int, int]]],
+                      visited: List[List[int]]) -> Tuple[bool, int]:
+        """Checks the left, right, above and bottom cell from cell based on
+        its position to check if it is of the target colour and returns
+        the value."""
+
         i, j = pos[0], pos[1]
         _max = len(board) - 1
         count = total
@@ -272,45 +279,49 @@ class BlobGoal(Goal):
         # Top left corner --> check right and bottom
         if i == 0 and j == 0:
             if r and b == 0:
-                return (False, count)
+                return False, count
             else:
                 count += r
                 count += b
-                return (True, count)
+                return True, count
 
         #Top right corner --> check left and bottom
         elif i == _max and j == 0:
             if l and b == 0:
-                return (False, count)
+                return False, count
             else:
-                count += r
+                count += l
                 count += b
-                return (True, count)
+                return True, count
 
         # Bottom left corner --> check above and right
         elif i == 0 and j == _max:
             if a and r == 0:
-                return (False, count)
+                return False, count
             else:
+                count += a
                 count += r
-                count += b
-                return (True, count)
+                return True, count
 
         # Bottom right corner --> check left and above
         elif i == _max and j == _max:
             if a and l == 0:
                 return (False, count)
             else:
-                count += r
-                count += b
-                return (True, count)
+                count += l
+                count += a
+                return True, count
         else:
             return (False, count)
 
 
     def _side_check(self, total: int, pos: Tuple[int, int],
-                      board: List[List[Tuple[int, int, int]]],
-                      visited: List[List[int]]) -> Tuple[bool, int]:
+                    board: List[List[Tuple[int, int, int]]],
+                    visited: List[List[int]]) -> Tuple[bool, int]:
+        """Checks the left, right, above and bottom cell from cell based on
+        its position to check if it is of the target colour and returns
+        the value."""
+
         i, j = pos[0], pos[1]
         _max = len(board) - 1
         count = total
@@ -334,7 +345,7 @@ class BlobGoal(Goal):
             if l and b  and a== 0:
                 return (False, count)
             else:
-                count += r
+                count += l
                 count += b
                 count += a
                 return (True, count)
@@ -344,8 +355,8 @@ class BlobGoal(Goal):
             if a and r and l == 0:
                 return (False, count)
             else:
+                count += a
                 count += r
-                count += b
                 count += l
                 return (True, count)
 
@@ -356,13 +367,16 @@ class BlobGoal(Goal):
             else:
                 count += r
                 count += b
+                count += l
                 return (True, count)
         else:
             return (False, count)
 
     def _mid_check(self, total: int, pos: Tuple[int, int],
-                    board: List[List[Tuple[int, int, int]]],
-                    visited: List[List[int]]) -> int:
+                   board: List[List[Tuple[int, int, int]]],
+                   visited: List[List[int]]) -> int:
+        """Checks the left, right, above and bottom cell from cell if it is of
+        the target colour and returns the value."""
         i, j = pos[0], pos[1]
         _max = len(board) - 1
         count = total
@@ -382,6 +396,7 @@ class BlobGoal(Goal):
     def _check_surroundings(self, total: int, pos: Tuple[int, int],
                             board: List[List[Tuple[int, int, int]]],
                             visited: List[List[int]]) -> int:
+        """Checks the surrounding cells if it is of the target colour."""
         c = self._corner_check(total, pos, board, visited)
         s = self._side_check(total, pos, board, visited)
         m = self._mid_check(total, pos, board, visited)
