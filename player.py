@@ -49,7 +49,7 @@ def create_players(num_human: int, num_random: int, smart_players: List[int]) \
     # TODO: Implement Me
     result = []
     # temporary goals to put into players
-    goals =[]
+    goals = []
     while len(goals) != (num_random + num_human +len(smart_players)):
         g = generate_goals
         if g not in goals:
@@ -117,6 +117,46 @@ def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
                 return _get_block(blocky, location, level)
         return None
 
+def _random_blocky(copy: Block) -> Block:
+    """Returns a random block from a copied board. """
+    rx = random.randrange(len(copy))
+    ry = random.randrange(len(copy))
+    rl = random.randrange(0, copy.level)
+    block = _get_block(copy, (rx, ry), rl)
+    return block
+
+def _random_action(lst: list) -> Tuple[str, int]:
+    """ Returns a random action from list. """
+    ra = lst[random.randrange(len(lst))]
+    return ra
+
+def _apply_action(action: Tuple[str, Optional[int]], blocky: Block) -> bool:
+    """Applies the action to a block and tests its validity."""
+    if action[0] == 'rotate':
+        if action[1] == 1:
+            return blocky.rotate(1)
+        else:
+            return blocky.rotate(3)
+    elif action[0] == 'swap':
+        if action[1] == 0:
+            return blocky.swap(0)
+        else:
+            return blocky.swap(1)
+    elif action[0] == 'smash':
+        return blocky.smash()
+    elif action[0] == 'combine':
+        return blocky.combine()
+    else:
+        return blocky.paint()
+
+def _get_move(actions: list, block: Block) -> Tuple[str, Optional[int]]:
+    """Returns the tuple of action  """
+    ra = _random_action(actions)
+    p = _apply_action(ra, block)
+    if p:
+        return ra
+    else:
+        _get_move(actions, block)
 
 class Player:
     """A player in the Blocky game.
@@ -245,10 +285,12 @@ class RandomPlayer(Player):
     # _proceed:
     #   True when the player should make a move, False when the player should
     #   wait.
+    """Computer player that chooses moves at random."""
     _proceed: bool
 
     def __init__(self, player_id: int, goal: Goal) -> None:
         # TODO: Implement Me
+        Player.__init__(self, player_id, goal)
         self._proceed = False
 
     def get_selected_block(self, board: Block) -> Optional[Block]:
@@ -271,9 +313,17 @@ class RandomPlayer(Player):
             return None  # Do not remove
 
         # TODO: Implement Me
-
+        # create copy of the board
+        copy = board.create_copy()
+        # randomly choose block and level in  board
+        block = _random_blocky(copy)
+        # randomly choose action
+        actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, SWAP_HORIZONTAL,
+                   SWAP_VERTICAL, SMASH, COMBINE, PAINT]
+        m = _get_move(actions, block)
+        move = _create_move(m, block)
         self._proceed = False  # Must set to False before returning!
-        return None  # FIXME
+        return move
 
 
 class SmartPlayer(Player):
@@ -281,10 +331,20 @@ class SmartPlayer(Player):
     # _proceed:
     #   True when the player should make a move, False when the player should
     #   wait.
+    # _difficulty:
+    #   The number of randomly generated valid moves the player selects the
+    #   highest scoring move from.
+    # ==================== Representation Invariants =====================
+    # _difficulty >= 0
+    """ Computer player that chooses a random move that makes the highest
+    increase score. """
     _proceed: bool
+    _difficulty: int
 
     def __init__(self, player_id: int, goal: Goal, difficulty: int) -> None:
         # TODO: Implement Me
+        Player.__init__(self, player_id, goal)
+        self._difficulty = difficulty
         self._proceed = False
 
     def get_selected_block(self, board: Block) -> Optional[Block]:
@@ -310,9 +370,38 @@ class SmartPlayer(Player):
             return None  # Do not remove
 
         # TODO: Implement Me
+        # get score of current board
+        curr = board.score
+        # makes n amount of random valid moves
 
-        self._proceed = False  # Must set to False before returning!
-        return None  # FIXME
+        a = [] # list of valid actions --> [Tuple[str, Optional[int], Block]]
+        s = [] # list of scores in parallel to actions in a
+        actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, SWAP_HORIZONTAL,
+                   SWAP_VERTICAL, SMASH, COMBINE, PAINT]
+
+        copy = board.create_copy()
+        block = _random_blocky(copy)
+
+        for _ in range(self._difficulty):
+            m = _get_move(actions, block)
+            move = _create_move(m, block)
+            a.append(move)
+
+        for i in range(len(a)):
+            s.append(a[i][2].score)
+
+        # get max score and return move
+        index = s.index(max(s))
+
+        # if best score is same, pass
+        if max(s) != curr:
+            self._proceed = False  # Must set to False before returning!
+            return a[index]
+
+        else:
+            block = _apply_action(PASS, block)
+            self._proceed = False  # Must set to False before returning!
+            return _create_move(PASS, block)
 
 
 if __name__ == '__main__':
