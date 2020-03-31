@@ -103,10 +103,6 @@ def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
             return block
         return None
 
-    # elif block.level < level and not block.children:
-    #     if level + 1 <= self.max
-    #     _get_block(block, location, level + 1)
-
     else:
         # We know that block.level < level and block.children
         for blocky in block.children:
@@ -114,7 +110,7 @@ def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
                 return _get_block(blocky, location, level)
         return None
 
-def _random_blocky(copy: Block) -> Block:
+def _get_random_blocky(copy: Block) -> Block:
     """Returns a random block from a copied board. """
     rx = random.randrange(0, copy.size)
     ry = random.randrange(0, copy.size)
@@ -122,7 +118,7 @@ def _random_blocky(copy: Block) -> Block:
     block = _get_block(copy, (rx, ry), rl)
     return block
 
-def _random_action(lst: list) -> Tuple[str, int]:
+def _get_random_action(lst: list) -> Tuple[str, int]:
     """ Returns a random action from list. """
     ra = lst[random.randrange(len(lst))]
     return ra
@@ -130,6 +126,7 @@ def _random_action(lst: list) -> Tuple[str, int]:
 def _create_move(action: Tuple[str, Optional[int]], block: Block) -> \
         Tuple[str, Optional[int], Block]:
     return action[0], action[1], block
+
 
 class Player:
     """A player in the Blocky game.
@@ -176,35 +173,25 @@ class Player:
         """
         raise NotImplementedError
 
-    def _apply_action(self, action: Tuple[str, Optional[int]],
-                      blocky: Block) -> bool:
-        """Applies the action to a block and tests its validity."""
+    def _check_action_validity(self, action: Tuple[str, int],
+                               block: Block) -> bool:
         if action[0] == 'rotate':
             if action[1] == 1:
-                return blocky.rotate(1)
+                return block.rotate(1)
             else:
-                return blocky.rotate(3)
+                return block.rotate(3)
         elif action[0] == 'swap':
             if action[1] == 0:
-                return blocky.swap(0)
+                return block.swap(0)
             else:
-                return blocky.swap(1)
+                return block.swap(1)
         elif action[0] == 'smash':
-            return blocky.smash()
+            return block.smash()
         elif action[0] == 'combine':
-            return blocky.combine()
+            return block.combine()
         else:
-            return blocky.paint(self.goal.colour)
+            return block.paint(self.goal.colour)
 
-    def _get_move(self, actions: list, block: Block) -> \
-            Tuple[str, Optional[int]]:
-        """Returns the tuple of action  """
-        ra = _random_action(actions)
-        p = self._apply_action(ra, block)
-        if p:
-            return ra
-        else:
-            self._get_move(actions, block)
 class HumanPlayer(Player):
     """A human player.
     """
@@ -312,15 +299,17 @@ class RandomPlayer(Player):
         # create copy of the board
         copy = board.create_copy()
         # randomly choose block and level in  board
-        block = _random_blocky(copy)
+        block = _get_random_blocky(copy)
         # randomly choose action
         actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, SWAP_HORIZONTAL,
                    SWAP_VERTICAL, SMASH, COMBINE, PAINT]
-        m = self._get_move(actions, block)
-        move = _create_move(m, block)
-
-        self._proceed = False  # Must set to False before returning!
-        return move
+        m = _get_random_action(actions)
+        if self._check_action_validity(m, block):
+            move = _create_move(m, block)
+            self._proceed = False  # Must set to False before returning!
+            return move
+        else:
+            self.generate_move(board)
 
 
 class SmartPlayer(Player):
@@ -365,43 +354,39 @@ class SmartPlayer(Player):
         """
         if not self._proceed:
             return None  # Do not remove
-
-        # TODO: Implement Me
-        # get score of current board
-        curr = self.goal.score(board)
-        # makes n amount of random valid moves
-
-        a = [] # list of valid actions --> [Tuple[str, Optional[int], Block]]
-        s = [] # list of scores of action parallel to a
-        actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, SWAP_HORIZONTAL,
-                   SWAP_VERTICAL, SMASH, COMBINE, PAINT]
-
-        copy = board.create_copy()
-        block = _random_blocky(copy)
-
-        # make self._difficulty number of moves
-        for _ in range(self._difficulty):
-            m = self._get_move(actions, block)  # guarantees move works on block
-            a.append(m)
-
-        # get the score of each move
-        for i in range(len(a)):
-            self._apply_action(a[i], block)
-            score = self.goal.score(block)
-            s.append(score)
-
-        # get max score and return move
-        index = s.index(max(s))
-
-        if max(s) != curr:
-            self._proceed = False  # Must set to False before returning!
-            return a[index][0], a[index][1], block
-
-        # pass if best score is same as before
         else:
-            block = self._apply_action(PASS, block)
-            self._proceed = False  # Must set to False before returning!
-            return _create_move(PASS, block)
+            # TODO: Implement Me
+            curr = self.goal.score(board)
+            possible_actions = []
+            possible_scores = []
+            actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE,
+                       SWAP_HORIZONTAL, SWAP_VERTICAL, SMASH, COMBINE, PAINT]
+
+            # get self._difficulty number of random moves
+            for _ in range(self._difficulty):
+                m = _get_random_action(actions)
+                blocky = board.create_copy()
+                if self._check_action_validity(m, blocky):
+                    possible_actions.append((m, blocky))
+
+            # get score
+            for i in range(len(possible_actions)):
+                blocky = possible_actions[i][-1]
+                possible_scores.append(self.goal.score(blocky))
+
+            # get max score
+            _max = max(possible_scores)
+            index = possible_scores.index(_max)
+
+            # if max score == current score: pass
+            if curr == _max:
+                self._proceed = False  # Must set to False before returning!
+                _create_move(PASS, board)
+            # else return action with max score
+            else:
+                self._proceed = False  # Must set to False before returning!
+                return possible_actions[index][0][0], \
+                       possible_actions[index][0][1], board
 
 
 if __name__ == '__main__':
