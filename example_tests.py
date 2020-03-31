@@ -175,6 +175,23 @@ def board_16x16_paint() -> Block:
     return board
 
 @pytest.fixture
+def board_16x16_copy() -> Block:
+    """Create a reference board with a size of 750 and a max_depth of 2.
+    """
+    # Level 0
+    board = Block((0, 0), 750, None, 0, 2)
+
+    # Level 1
+    colours = [None, COLOUR_LIST[2], COLOUR_LIST[1], COLOUR_LIST[3]]
+    set_children(board, colours)
+
+    # Level 2
+    colours = [COLOUR_LIST[0], COLOUR_LIST[1], COLOUR_LIST[1], COLOUR_LIST[3]]
+    set_children(board.children[0], colours)
+
+    return board
+
+@pytest.fixture
 def flattened_board_16x16() -> List[List[Tuple[int, int, int]]]:
     """Create a list of the unit cells inside the reference board."""
     return [
@@ -327,6 +344,12 @@ class TestBlock:
         """
         board_16x16.children[0].children[0].paint(COLOUR_LIST[3])
         assert  board_16x16 == board_16x16_paint
+
+    def test_combine(self, board_16x16, board_16x16_copy) -> None:
+        """Tests that combine works on the top right block of reference bord on
+        level 1. """
+        board_16x16.children[0].combine()
+        assert not board_16x16 == board_16x16_copy
 
 
 
