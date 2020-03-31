@@ -319,6 +319,7 @@ class RandomPlayer(Player):
                    SWAP_VERTICAL, SMASH, COMBINE, PAINT]
         m = _get_move(actions, block)
         move = _create_move(m, block)
+
         self._proceed = False  # Must set to False before returning!
         return move
 
@@ -372,29 +373,33 @@ class SmartPlayer(Player):
         # makes n amount of random valid moves
 
         a = [] # list of valid actions --> [Tuple[str, Optional[int], Block]]
-        s = [] # list of scores in parallel to actions in a
+        s = [] # list of scores of action parallel to a
         actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, SWAP_HORIZONTAL,
                    SWAP_VERTICAL, SMASH, COMBINE, PAINT]
 
         copy = board.create_copy()
         block = _random_blocky(copy)
 
+        # make self._difficulty number of moves
         for _ in range(self._difficulty):
-            m = _get_move(actions, block)
+            m = _get_move(actions, block)  # guarantees move works on block
             move = _create_move(m, block)
             a.append(move)
 
+        # get the score of each move
         for i in range(len(a)):
+
             s.append(a[i][2].score)
 
         # get max score and return move
         index = s.index(max(s))
 
-        # if best score is same, pass
+
         if max(s) != curr:
             self._proceed = False  # Must set to False before returning!
             return a[index]
 
+        # pass if best score is same as before
         else:
             block = _apply_action(PASS, block)
             self._proceed = False  # Must set to False before returning!

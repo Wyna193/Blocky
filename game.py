@@ -136,9 +136,9 @@ if __name__ == '__main__':
     random.seed(1001)
 
     # game = create_sample_game()
-    # game = create_auto_game()
+    game = create_auto_game()
     # game = create_two_player_game()
-    game = create_solitaire_game()
+    # game = create_solitaire_game()
 
     # Run the game for 5 turns
     game.run_game(50)
