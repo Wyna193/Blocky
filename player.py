@@ -49,11 +49,7 @@ def create_players(num_human: int, num_random: int, smart_players: List[int]) \
     # TODO: Implement Me
     result = []
     # temporary goals to put into players
-    goals = []
-    while len(goals) != (num_random + num_human +len(smart_players)):
-        g = generate_goals
-        if g not in goals:
-            goals.append(g)
+    goals = generate_goals(num_random + num_human + len(smart_players))
 
     # make human players
     if num_human != 0:
@@ -101,14 +97,15 @@ def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
     # TODO: Implement me
     x, y = location[0], location[1]
 
-    if block.level == level:
+    if block.level == level or (block.level < level and not block.children):
         if x in range(block.position[0], block.position[0] + block.size) and \
                 y in range(block.position[1], block.position[1] + block.size):
             return block
         return None
 
-    elif block.level < level and not block.children:
-        _get_block(block, location, level + 1)
+    # elif block.level < level and not block.children:
+    #     if level + 1 <= self.max
+    #     _get_block(block, location, level + 1)
 
     else:
         # We know that block.level < level and block.children

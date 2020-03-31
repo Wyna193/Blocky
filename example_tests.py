@@ -104,6 +104,22 @@ def board_16x16_swap0() -> Block:
 
     return board
 
+@pytest.fixture
+def board_16x16_swap1() -> Block:
+    """Create a reference board that is swapped along the vertical plane.
+    """
+    # Level 0
+    board = Block((0, 0), 750, None, 0, 2)
+
+    # Level 1
+    colours = [COLOUR_LIST[3], COLOUR_LIST[1], COLOUR_LIST[2], None]
+    set_children(board, colours)
+
+    # Level 2
+    colours = [COLOUR_LIST[0], COLOUR_LIST[1], COLOUR_LIST[1], COLOUR_LIST[3]]
+    set_children(board.children[1], colours)
+
+    return board
 
 @pytest.fixture
 def board_16x16_rotate1() -> Block:
@@ -249,6 +265,13 @@ class TestBlock:
         """
         board_16x16.swap(0)
         assert board_16x16 == board_16x16_swap0
+
+    def test_swap1(self, board_16x16, board_16x16_swap1) -> None:
+        """Test that the reference board can be correctly swapped along the
+        horizontal plane.
+        """
+        board_16x16.swap(0)
+        assert board_16x16 == board_16x16_swap1
 
     def test_rotate1(self, board_16x16, board_16x16_rotate1) -> None:
         """Test that the top-right block of reference board on level 1 can be
