@@ -30,7 +30,7 @@ import pytest
 
 from block import Block
 from blocky import _block_to_squares
-from goal import BlobGoal, PerimeterGoal, _flatten
+from goal import BlobGoal, PerimeterGoal, _flatten, generate_goals, _grid
 from player import _get_block
 from renderer import Renderer
 from settings import COLOUR_LIST
@@ -201,6 +201,15 @@ def flattened_board_16x16() -> List[List[Tuple[int, int, int]]]:
         [COLOUR_LIST[0], COLOUR_LIST[3], COLOUR_LIST[3], COLOUR_LIST[3]]
     ]
 
+@pytest.fixture
+def visited_board_16x16() -> List[List[int]]:
+    """Create a list of -1 parallel to a flattened board."""
+    return [
+        [-1, -1, -1, -1],
+        [-1, -1, -1, -1],
+        [-1, -1, -1, -1],
+        [-1, -1, -1, -1]
+    ]
 
 def test_block_to_squares_leaf(child_block) -> None:
     """Test that a board with only one block can be correctly trasnlated into
@@ -379,6 +388,7 @@ class TestPlayer:
             board_16x16.children[0].children[0]
 
 
+
 class TestGoal:
     """A collection of methods for testing the sub-classes of Goal.
 
@@ -442,6 +452,19 @@ class TestGoal:
             goal = PerimeterGoal(colour)
             assert goal.score(board_16x16) == expected
 
+    def test_generate_goals(self) -> None:
+        """Tests generate_goal, testing that there are no duplicates """
+        goals = generate_goals(4)
+        r = []
+        for g in goals:
+            if g not in r:
+                r.append(g)
+        assert len(r) == 4
+
+    def test__grid(self, flattened_board_16x16, visited_board_16x16) -> None:
+        """Test that _grid works properly"""
+        v = _grid(flattened_board_16x16)
+        assert v == visited_board_16x16
 
 if __name__ == '__main__':
     pytest.main(['example_tests.py'])
