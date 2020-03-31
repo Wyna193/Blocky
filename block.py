@@ -284,56 +284,6 @@ class Block:
             return True
 
 
-    def _cw_rotation(self, direction) -> None:
-        """The clockwise rotation of blocks and its descendants"""
-        # We know that block must have children in order to be rotated
-        cp = self._children_positions()  # a list of children's position
-        tr, tl, bl, br = cp[0], cp[1], cp[2], cp[3]
-        for block in self.children:
-            # need to change position of block before recursing into children
-            if block == self.children[0]:
-                block.position = br
-                block._update_children_positions(block.position)
-            elif block == self.children[1]:
-                block.position = tr
-                block._update_children_positions(block.position)
-            elif block == self.children[2]:
-                block.position = tl
-                block._update_children_positions(block.position)
-            else:
-                block.position = bl
-                block._update_children_positions(block.position)
-            # recurse to rotate little blockies
-            block.rotate(direction)
-
-        # once all blockies' are in right position, set right order
-        self.children = [self.children[1], self.children[2],
-                         self.children[3], self.children[0]]
-
-    def _ccw_rotation(self, direction) -> None:
-        """The counterclockwise rotation of block and its descendants."""
-        # We know that block must have children in order to be rotated
-        cp = self._children_positions()  # a list of children's position
-        tr, tl, bl, br = cp[0], cp[1], cp[2], cp[3]
-        for block in self.children:
-            if block == self.children[0]:
-                block.position = tr
-                block._update_children_positions(block.position)
-            elif block == self.children[1]:
-                block.position = bl
-                block._update_children_positions(block.position)
-            elif block == self.children[2]:
-                block.position = br
-                block._update_children_positions(block.position)
-            else:
-                block.position = tl
-                block._update_children_positions(block.position)
-            # recurse through little blockies
-            block.rotate(direction)
-
-        self.children = [self.children[1], self.children[2],
-                         self.children[3], self.children[0]]
-
     def rotate(self, direction: int) -> bool:
         """Rotate this Block and all its descendants.
 
