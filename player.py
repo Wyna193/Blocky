@@ -388,12 +388,11 @@ class SmartPlayer(Player):
 
         # get the score of each move
         for i in range(len(a)):
-
-            s.append(a[i][2].score)
+            score = _apply_action((a[i][0], a[i][1], block))
+            s.append(score)
 
         # get max score and return move
         index = s.index(max(s))
-
 
         if max(s) != curr:
             self._proceed = False  # Must set to False before returning!
