@@ -533,13 +533,13 @@ footer {
     <body>
         <header>
             <h1 class="title">PyTA Error Report</h1>
-            <time>Tue. Mar. 31 2020, 05:00:07 AM</time>
+            <time>Tue. Mar. 31 2020, 12:13:25 PM</time>
         </header>
         <main>
             
             <section>
                 <article class="file-name">
-                    <h2> /Users/oliviawynaparamitha/Downloads/csc148/assignments/a2/A2-CSC148-master/game.py </h2>
+                    <h2> C:/Users/hp/Desktop/UNI COURSES/Y1, S2/CSC148/assignments/a2/A2-CSC148/player.py </h2>
                 </article>
                 <article class="error-output code-errors">
                     <h3 class="category-heading">
@@ -565,9 +565,50 @@ footer {
                     </h3>
                     <div class="content collapsible">
                         
-                        <span class="empty-placeholder">None!
+                        <div class="error-instance">
 
-</span>
+                            <div class="info">
+                                <span class="error-link style-error-id">
+                                    <a href="http://www.cs.toronto.edu/~david/pyta/&#35;E9994" target="_blank">&#10064; E9994 (unnecessary-indexing)</a>
+                                </span>
+                                <span class="occurrences">
+                                1
+                                
+                                 occurrence.
+                                
+                                </span>
+                                <span class="shown">
+                                
+                                </span>
+                                <span class="slider">
+                                   <button> Expand/Collapse </button>
+                                </span>
+                            </div>
+
+                            <div class="message-container collapsible">
+                                
+                                <div class="message">
+                                    <h4 class="message-name">
+                                        [Line 371] For loop variable "i" can be simplified
+                                        <span class="slider">
+                                            <button style="float: right; background: #458B00;"> Expand/Collapse </button>
+                                        </span>
+                                    </h4>
+                                    <div class="collapsible">
+                                      
+                                      <code>  <span class="grey line-num">369</span>  <span class="grey"></span>
+  <span class="grey line-num">370</span>              <span class="grey"><span class="pygments-c1"># get score</span></span>
+  <span class="gbold line-num">371</span>              <span class="black"><span class="pygments-k">for</span> </span><span class="highlight-pyta"><span class="pygments-n">i</span></span> <span class="black"><span class="pygments-ow">in</span> <span class="pygments-nb">range</span><span class="pygments-p">(</span><span class="pygments-nb">len</span><span class="pygments-p">(</span><span class="pygments-n">possible_actions</span><span class="pygments-p">)):</span></span>
+  <span class="grey line-num">372</span>                  <span class="grey"><span class="pygments-n">blocky</span> <span class="pygments-o">=</span> <span class="pygments-n">possible_actions</span><span class="pygments-p">[</span><span class="pygments-n">i</span><span class="pygments-p">][</span><span class="pygments-o">-</span><span class="pygments-mi">1</span><span class="pygments-p">]</span></span>
+  <span class="grey line-num">373</span>                  <span class="grey"><span class="pygments-n">possible_scores</span><span class="pygments-o">.</span><span class="pygments-n">append</span><span class="pygments-p">(</span><span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">goal</span><span class="pygments-o">.</span><span class="pygments-n">score</span><span class="pygments-p">(</span><span class="pygments-n">blocky</span><span class="pygments-p">))</span></span>
+</code>
+                                      
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                        </div>
                         
                     </div>
                 </article>

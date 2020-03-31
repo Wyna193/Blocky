@@ -371,7 +371,7 @@ class Block:
 
 
             if (max(colours.values()) > 2 and len(colours.values()) >= 2) or \
-                    (max(colours.values()) == 2 and len(colours.values()) > 2) :
+                    (max(colours.values()) == 2 and len(colours.values()) > 2):
                 colour = max(colours, key=colours.get)
                 self.children = []
                 self.colour = colour

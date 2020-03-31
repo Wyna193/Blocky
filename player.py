@@ -57,10 +57,7 @@ def create_players(num_human: int, num_random: int, smart_players: List[int]) \
             result.append(HumanPlayer(i, goals[i]))
 
     # make random players
-    if num_human != 0:
-        total = num_human - 1
-    else:
-        total = 0
+    total = num_human
     if num_random != 0:
         for i in range(num_random):
             # use id as num_humans + i
@@ -296,20 +293,21 @@ class RandomPlayer(Player):
             return None  # Do not remove
 
         # TODO: Implement Me
-        # create copy of the board
-        copy = board.create_copy()
-        # randomly choose block and level in  board
-        block = _get_random_blocky(copy)
-        # randomly choose action
-        actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, SWAP_HORIZONTAL,
-                   SWAP_VERTICAL, SMASH, COMBINE, PAINT]
-        m = _get_random_action(actions)
-        if self._check_action_validity(m, block):
-            move = _create_move(m, block)
-            self._proceed = False  # Must set to False before returning!
-            return move
         else:
-            self.generate_move(board)
+            # create copy of the board
+            copy = board.create_copy()
+            # randomly choose block and level in  board
+            block = _get_random_blocky(copy)
+            # randomly choose action
+            actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE,
+                       SWAP_HORIZONTAL, SWAP_VERTICAL, SMASH, COMBINE, PAINT]
+            m = _get_random_action(actions)
+            if self._check_action_validity(m, block):
+                move = _create_move(m, block)
+                self._proceed = False  # Must set to False before returning!
+                return move
+            else:
+                return self.generate_move(board)
 
 
 class SmartPlayer(Player):
@@ -363,9 +361,9 @@ class SmartPlayer(Player):
                        SWAP_HORIZONTAL, SWAP_VERTICAL, SMASH, COMBINE, PAINT]
 
             # get self._difficulty number of random moves
-            for _ in range(self._difficulty):
+            while len(possible_actions) - 1 < self._difficulty:
                 m = _get_random_action(actions)
-                blocky = board.create_copy()
+                blocky = _get_random_blocky(board)
                 if self._check_action_validity(m, blocky):
                     possible_actions.append((m, blocky))
 
@@ -381,12 +379,12 @@ class SmartPlayer(Player):
             # if max score == current score: pass
             if curr == _max:
                 self._proceed = False  # Must set to False before returning!
-                _create_move(PASS, board)
+                return _create_move(PASS, board)
+
             # else return action with max score
             else:
                 self._proceed = False  # Must set to False before returning!
-                return possible_actions[index][0][0], \
-                       possible_actions[index][0][1], board
+                return _create_move(possible_actions[index][0], board)
 
 
 if __name__ == '__main__':

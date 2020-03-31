@@ -22,9 +22,8 @@ Misha Schwartz, and Jaisie Sin
 This file contains the hierarchy of Goal classes.
 """
 from __future__ import annotations
-import math
 import random
-from typing import List, Tuple, Optional, Union
+from typing import List, Tuple, Union
 from block import Block
 from settings import colour_name, COLOUR_LIST
 
@@ -70,9 +69,9 @@ def generate_goals(num_goals: int) -> List[Goal]:
 def _grid(flattened: List[List[Tuple[int, int, int]]]) -> List[List[int]]:
     """Returns a flattened block with -1 in the position of each cell."""
     r = []
-    for i in range(len(flattened)):
+    for _ in range(len(flattened)):
         column = []
-        for j in range(len(flattened)):
+        for _ in range(len(flattened)):
             column.append(-1)
         r.append(column)
     return r
@@ -109,9 +108,9 @@ def _flatten(block: Block) -> List[List[Tuple[int, int, int]]]:
     # TT: Must test on board with depth >= 3 and diff depths
     if block.colour is not None:
         res = []
-        for i in range(2 ** (block.max_depth - block.level)):
+        for _ in range(2 ** (block.max_depth - block.level)):
             cell = []
-            for j in range(2 ** (block.max_depth - block.level)):
+            for _ in range(2 ** (block.max_depth - block.level)):
                 cell.append(block.colour)
             res.append(cell)
         return res
@@ -128,15 +127,14 @@ def _flatten(block: Block) -> List[List[Tuple[int, int, int]]]:
         # Make a column and append it to res
         while i < 4:
             # Flatten and take adjacent blockies out of their columns
-            curr, next = _flatten(blockies[i]), _flatten(blockies[i + 1])
-            c, n = _decolumnise(curr), _decolumnise(next)
+            curr, nxt = _flatten(blockies[i]), _flatten(blockies[i + 1])
+            c, n = _decolumnise(curr), _decolumnise(nxt)
 
             # Make columns with adjacent top and bottom blockies
             start, end = 0, size // 2
             while start < len(c):
                 top, bottom = c[start:end], n[start:end]
-                col = top + bottom
-                res.append(col)
+                res.append(top + bottom)
                 start, end = start + size // 2, end + size // 2
             i += 2
 
@@ -174,6 +172,20 @@ class Goal:
 
 
 class PerimeterGoal(Goal):
+    """A player goal in the game of Blocky.
+
+    This goal counts the total number of unit cells of the target colour on the
+    outer perimeter of the board.
+
+    Corner cells count twice.
+
+    === Attributes ===
+    colour:
+        The target colour for this goal, that is the colour to which
+        this goal applies.
+    """
+    colour: Tuple[int, int, int]
+
     def score(self, board: Block) -> int:
         """Returns the number of blocks of the target colour that are in the
         perimeter of the board."""
@@ -182,7 +194,7 @@ class PerimeterGoal(Goal):
         score = 0
         for i in range(len(b)):
             # Check if colour is in a corner spot
-            if i == 0 or i == len(b) - 1:
+            if i in (0, len(b) - 1):
                 score += b[i].count(self.colour)
                 if b[i][0] == self.colour:
                     score += 1
@@ -204,6 +216,21 @@ class PerimeterGoal(Goal):
 
 
 class BlobGoal(Goal):
+    """A player goal in the game of Blocky.
+
+    This goal counts the largest connected 'blob' of the same colour.
+    Two blocks are connected if the sides touch. Touching corners do not count.
+
+    The player's score is the number of unit cells in the largest
+    blob of the goal colour.
+
+    === Attributes ===
+    colour:
+        The target colour for this goal, that is the colour to which
+        this goal applies.
+    """
+    colour: Tuple[int, int, int]
+
     def score(self, board: Block) -> int:
         """Returns the score of the number of target coloured blocks in larger
         connected blocks of the same colour."""
