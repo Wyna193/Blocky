@@ -110,12 +110,14 @@ def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
                 return _get_block(blocky, location, level)
         return None
 
+
 def _get_random_blocky(copy: Block) -> Block:
     """Returns a random block from a copied board. """
     rx = random.randrange(0, copy.size)
     ry = random.randrange(0, copy.size)
     rl = random.randrange(0, copy.max_depth)
     block = _get_block(copy, (rx, ry), rl)
+
     return block
 
 def _get_random_action(lst: list) -> Tuple[str, int]:
@@ -297,19 +299,20 @@ class RandomPlayer(Player):
 
         # TODO: Implement Me
         # create copy of the board
-        copy = board.create_copy()
-        # randomly choose block and level in  board
-        block = _get_random_blocky(copy)
-        # randomly choose action
-        actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, SWAP_HORIZONTAL,
-                   SWAP_VERTICAL, SMASH, COMBINE, PAINT]
-        m = _get_random_action(actions)
-        if self._check_action_validity(m, block):
-            move = _create_move(m, block)
-            self._proceed = False  # Must set to False before returning!
-            return move
         else:
-            self.generate_move(board)
+            copy = board.create_copy()
+            # randomly choose block and level in  board
+            block = _get_random_blocky(copy)
+            # randomly choose action
+            actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE,
+                       SWAP_HORIZONTAL, SWAP_VERTICAL, SMASH, COMBINE, PAINT]
+            m = _get_random_action(actions)
+            if self._check_action_validity(m, block):
+                move = _create_move(m, block)
+                self._proceed = False  # Must set to False before returning!
+                return move
+            else:
+                self.generate_move(board)
 
 
 class SmartPlayer(Player):
@@ -385,8 +388,7 @@ class SmartPlayer(Player):
             # else return action with max score
             else:
                 self._proceed = False  # Must set to False before returning!
-                return possible_actions[index][0][0], \
-                       possible_actions[index][0][1], board
+                return _create_move(possible_actions[index][0], board)
 
 
 if __name__ == '__main__':
