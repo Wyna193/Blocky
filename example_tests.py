@@ -373,7 +373,7 @@ class TestBlock:
         board_16x16.children[0].combine()
         assert board_16x16 == board_16x16_combine
 
-    def test_copy(self, board_16x16, board_16x16_copy) -> None:
+    def test_create_copy(self, board_16x16, board_16x16_copy) -> None:
         """Tests that combine works on the top right block of reference bord on
         level 1. """
         board_16x16.create_copy()
