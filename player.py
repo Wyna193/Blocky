@@ -107,12 +107,14 @@ def _get_block(block: Block, location: Tuple[int, int], level: int) -> \
                 return _get_block(blocky, location, level)
         return None
 
+
 def _get_random_blocky(copy: Block) -> Block:
     """Returns a random block from a copied board. """
     rx = random.randrange(0, copy.size)
     ry = random.randrange(0, copy.size)
     rl = random.randrange(0, copy.max_depth)
     block = _get_block(copy, (rx, ry), rl)
+
     return block
 
 def _get_random_action(lst: list) -> Tuple[str, int]:
