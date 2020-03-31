@@ -139,6 +139,40 @@ def board_16x16_rotate1() -> Block:
 
     return board
 
+@pytest.fixture
+def board_16x16_rotate3() -> Block:
+    """Create a reference board where the top-right block on level 1 has been
+    rotated counter-clockwise.
+    """
+    # Level 0
+    board = Block((0, 0), 750, None, 0, 2)
+
+    # Level 1
+    colours = [None, COLOUR_LIST[2], COLOUR_LIST[1], COLOUR_LIST[3]]
+    set_children(board, colours)
+
+    # Level 2
+    colours = [COLOUR_LIST[3], COLOUR_LIST[0], COLOUR_LIST[1], COLOUR_LIST[1]]
+    set_children(board.children[0], colours)
+
+    return board
+
+@pytest.fixture
+def board_16x16_paint() -> Block:
+    """Create a reference board where the top-right block on level 2 is painted.
+    """
+    # Level 0
+    board = Block((0, 0), 750, None, 0, 2)
+
+    # Level 1
+    colours = [None, COLOUR_LIST[2], COLOUR_LIST[1], COLOUR_LIST[3]]
+    set_children(board, colours)
+
+    # Level 2
+    colours = [COLOUR_LIST[3], COLOUR_LIST[1], COLOUR_LIST[1], COLOUR_LIST[3]]
+    set_children(board.children[0], colours)
+
+    return board
 
 @pytest.fixture
 def flattened_board_16x16() -> List[List[Tuple[int, int, int]]]:
@@ -279,6 +313,21 @@ class TestBlock:
         """
         board_16x16.children[0].rotate(1)
         assert board_16x16 == board_16x16_rotate1
+
+    def test_rotate3(self, board_16x16, board_16x16_rotate3) -> None:
+        """Test that the top-right block of reference board on level 1 can be
+        correctly rotated counter-clockwise.
+        """
+        board_16x16.children[0].rotate(3)
+        assert board_16x16 == board_16x16_rotate3
+
+    def test_paint(self, board_16x16, board_16x16_paint) -> None:
+        """Tests that paint works on the top right block of reference board on
+        level 2.
+        """
+        board_16x16.children[0].children[0].paint(COLOUR_LIST[3])
+        assert  board_16x16 == board_16x16_paint
+
 
 
 class TestPlayer:
