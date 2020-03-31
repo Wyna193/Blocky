@@ -533,13 +533,13 @@ footer {
     <body>
         <header>
             <h1 class="title">PyTA Error Report</h1>
-            <time>Tue. Mar. 31 2020, 10:59:10 AM</time>
+            <time>Tue. Mar. 31 2020, 11:52:39 AM</time>
         </header>
         <main>
             
             <section>
                 <article class="file-name">
-                    <h2> /Users/oliviawynaparamitha/Downloads/csc148/assignments/a2/A2-CSC148-master/game.py </h2>
+                    <h2> /Users/oliviawynaparamitha/Downloads/csc148/assignments/a2/A2-CSC148-master/player.py </h2>
                 </article>
                 <article class="error-output code-errors">
                     <h3 class="category-heading">
@@ -565,9 +565,186 @@ footer {
                     </h3>
                     <div class="content collapsible">
                         
-                        <span class="empty-placeholder">None!
+                        <div class="error-instance">
 
-</span>
+                            <div class="info">
+                                <span class="error-link style-error-id">
+                                    <a href="http://www.cs.toronto.edu/~david/pyta/&#35;R1710" target="_blank">&#10064; R1710 (inconsistent-return-statements)</a>
+                                </span>
+                                <span class="occurrences">
+                                2
+                                
+                                 occurrences.
+                                
+                                </span>
+                                <span class="shown">
+                                
+                                </span>
+                                <span class="slider">
+                                   <button> Expand/Collapse </button>
+                                </span>
+                            </div>
+
+                            <div class="message-container collapsible">
+                                
+                                <div class="message">
+                                    <h4 class="message-name">
+                                        [Line 288] Since this function can return a non-None value, you should explicitly write "return None" whenever None is returned by this function. (Possibly including possibly at the end of the function body.)
+                                        <span class="slider">
+                                            <button style="float: right; background: #458B00;"> Expand/Collapse </button>
+                                        </span>
+                                    </h4>
+                                    <div class="collapsible">
+                                      
+                                      <code>  <span class="grey line-num">286</span>              <span class="grey"><span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">_proceed</span> <span class="pygments-o">=</span> <span class="pygments-kc">True</span></span>
+  <span class="grey line-num">287</span>  <span class="grey"></span>
+  <span class="gbold line-num">288</span>      <span class="black"></span><span class="highlight-pyta"><span class="pygments-k">def</span> <span class="pygments-nf">generate_move</span><span class="pygments-p">(</span><span class="pygments-bp">self</span><span class="pygments-p">,</span> <span class="pygments-n">board</span><span class="pygments-p">:</span> <span class="pygments-n">Block</span><span class="pygments-p">)</span> <span class="pygments-o">-&gt;</span>\</span>
+  <span class="gbold line-num">289</span>              <span class="highlight-pyta"><span class="pygments-n">Optional</span><span class="pygments-p">[</span><span class="pygments-n">Tuple</span><span class="pygments-p">[</span><span class="pygments-nb">str</span><span class="pygments-p">,</span> <span class="pygments-n">Optional</span><span class="pygments-p">[</span><span class="pygments-nb">int</span><span class="pygments-p">],</span> <span class="pygments-n">Block</span><span class="pygments-p">]]:</span></span>
+  <span class="gbold line-num">290</span>          <span class="highlight-pyta"><span class="pygments-s2">&quot;&quot;&quot;Return a valid, randomly generated move.</span></span>
+  <span class="gbold line-num">291</span>  <span class="highlight-pyta"></span>
+  <span class="gbold line-num">292</span>          <span class="highlight-pyta"><span class="pygments-n">A</span> <span class="pygments-n">valid</span> <span class="pygments-n">move</span> <span class="pygments-ow">is</span> <span class="pygments-n">a</span> <span class="pygments-n">move</span> <span class="pygments-n">other</span> <span class="pygments-n">than</span> <span class="pygments-n">PASS</span> <span class="pygments-n">that</span> <span class="pygments-n">can</span> <span class="pygments-n">be</span> <span class="pygments-n">successfully</span></span>
+  <span class="gbold line-num">293</span>          <span class="highlight-pyta"><span class="pygments-n">performed</span> <span class="pygments-n">on</span> <span class="pygments-n">the</span> <span class="pygments-o">&lt;</span><span class="pygments-n">board</span><span class="pygments-o">&gt;.</span></span>
+  <span class="gbold line-num">294</span>  <span class="highlight-pyta"></span>
+  <span class="gbold line-num">295</span>          <span class="highlight-pyta"><span class="pygments-n">This</span> <span class="pygments-n">function</span> <span class="pygments-n">does</span> <span class="pygments-ow">not</span> <span class="pygments-n">mutate</span> <span class="pygments-o">&lt;</span><span class="pygments-n">board</span><span class="pygments-o">&gt;.</span></span>
+  <span class="gbold line-num">296</span>          <span class="highlight-pyta"><span class="pygments-s2">&quot;&quot;&quot;</span></span>
+  <span class="gbold line-num">297</span>          <span class="highlight-pyta"><span class="pygments-k">if</span> <span class="pygments-ow">not</span> <span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">_proceed</span><span class="pygments-p">:</span></span>
+  <span class="gbold line-num">298</span>              <span class="highlight-pyta"><span class="pygments-k">return</span> <span class="pygments-kc">None</span>  <span class="pygments-c1"># Do not remove</span></span>
+  <span class="gbold line-num">299</span>  <span class="highlight-pyta"></span>
+  <span class="gbold line-num">300</span>          <span class="highlight-pyta"><span class="pygments-c1"># TODO: Implement Me</span></span>
+  <span class="gbold line-num">301</span>          <span class="highlight-pyta"><span class="pygments-c1"># create copy of the board</span></span>
+  <span class="gbold line-num">302</span>          <span class="highlight-pyta"><span class="pygments-k">else</span><span class="pygments-p">:</span></span>
+  <span class="gbold line-num">303</span>              <span class="highlight-pyta"><span class="pygments-n">copy</span> <span class="pygments-o">=</span> <span class="pygments-n">board</span><span class="pygments-o">.</span><span class="pygments-n">create_copy</span><span class="pygments-p">()</span></span>
+  <span class="gbold line-num">304</span>              <span class="highlight-pyta"><span class="pygments-c1"># randomly choose block and level in  board</span></span>
+  <span class="gbold line-num">305</span>              <span class="highlight-pyta"><span class="pygments-n">block</span> <span class="pygments-o">=</span> <span class="pygments-n">_get_random_blocky</span><span class="pygments-p">(</span><span class="pygments-n">copy</span><span class="pygments-p">)</span></span>
+  <span class="gbold line-num">306</span>              <span class="highlight-pyta"><span class="pygments-c1"># randomly choose action</span></span>
+  <span class="gbold line-num">307</span>              <span class="highlight-pyta"><span class="pygments-n">actions</span> <span class="pygments-o">=</span> <span class="pygments-p">[</span><span class="pygments-n">ROTATE_CLOCKWISE</span><span class="pygments-p">,</span> <span class="pygments-n">ROTATE_COUNTER_CLOCKWISE</span><span class="pygments-p">,</span></span>
+  <span class="gbold line-num">308</span>                         <span class="highlight-pyta"><span class="pygments-n">SWAP_HORIZONTAL</span><span class="pygments-p">,</span> <span class="pygments-n">SWAP_VERTICAL</span><span class="pygments-p">,</span> <span class="pygments-n">SMASH</span><span class="pygments-p">,</span> <span class="pygments-n">COMBINE</span><span class="pygments-p">,</span> <span class="pygments-n">PAINT</span><span class="pygments-p">]</span></span>
+  <span class="gbold line-num">309</span>              <span class="highlight-pyta"><span class="pygments-n">m</span> <span class="pygments-o">=</span> <span class="pygments-n">_get_random_action</span><span class="pygments-p">(</span><span class="pygments-n">actions</span><span class="pygments-p">)</span></span>
+  <span class="gbold line-num">310</span>              <span class="highlight-pyta"><span class="pygments-k">if</span> <span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">_check_action_validity</span><span class="pygments-p">(</span><span class="pygments-n">m</span><span class="pygments-p">,</span> <span class="pygments-n">block</span><span class="pygments-p">):</span></span>
+  <span class="gbold line-num">311</span>                  <span class="highlight-pyta"><span class="pygments-n">move</span> <span class="pygments-o">=</span> <span class="pygments-n">_create_move</span><span class="pygments-p">(</span><span class="pygments-n">m</span><span class="pygments-p">,</span> <span class="pygments-n">block</span><span class="pygments-p">)</span></span>
+  <span class="gbold line-num">312</span>                  <span class="highlight-pyta"><span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">_proceed</span> <span class="pygments-o">=</span> <span class="pygments-kc">False</span>  <span class="pygments-c1"># Must set to False before returning!</span></span>
+  <span class="gbold line-num">313</span>                  <span class="highlight-pyta"><span class="pygments-k">return</span> <span class="pygments-n">move</span></span>
+  <span class="gbold line-num">314</span>              <span class="highlight-pyta"><span class="pygments-k">else</span><span class="pygments-p">:</span></span>
+  <span class="gbold line-num">315</span>                  <span class="highlight-pyta"><span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">generate_move</span><span class="pygments-p">(</span><span class="pygments-n">board</span><span class="pygments-p">)</span></span>
+  <span class="grey line-num">316</span>  <span class="grey"></span>
+  <span class="grey line-num">317</span>  <span class="grey"></span>
+</code>
+                                      
+                                    </div>
+                                </div>
+                                
+                                <div class="message">
+                                    <h4 class="message-name">
+                                        [Line 346] Since this function can return a non-None value, you should explicitly write "return None" whenever None is returned by this function. (Possibly including possibly at the end of the function body.)
+                                        <span class="slider">
+                                            <button style="float: right; background: #458B00;"> Expand/Collapse </button>
+                                        </span>
+                                    </h4>
+                                    <div class="collapsible">
+                                      
+                                      <code>  <span class="grey line-num">344</span>              <span class="grey"><span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">_proceed</span> <span class="pygments-o">=</span> <span class="pygments-kc">True</span></span>
+  <span class="grey line-num">345</span>  <span class="grey"></span>
+  <span class="gbold line-num">346</span>      <span class="black"></span><span class="highlight-pyta"><span class="pygments-k">def</span> <span class="pygments-nf">generate_move</span><span class="pygments-p">(</span><span class="pygments-bp">self</span><span class="pygments-p">,</span> <span class="pygments-n">board</span><span class="pygments-p">:</span> <span class="pygments-n">Block</span><span class="pygments-p">)</span> <span class="pygments-o">-&gt;</span>\</span>
+  <span class="gbold line-num">347</span>              <span class="highlight-pyta"><span class="pygments-n">Optional</span><span class="pygments-p">[</span><span class="pygments-n">Tuple</span><span class="pygments-p">[</span><span class="pygments-nb">str</span><span class="pygments-p">,</span> <span class="pygments-n">Optional</span><span class="pygments-p">[</span><span class="pygments-nb">int</span><span class="pygments-p">],</span> <span class="pygments-n">Block</span><span class="pygments-p">]]:</span></span>
+  <span class="gbold line-num">348</span>          <span class="highlight-pyta"><span class="pygments-s2">&quot;&quot;&quot;Return a valid move by assessing multiple valid moves and choosing</span></span>
+  <span class="gbold line-num">349</span>          <span class="highlight-pyta"><span class="pygments-n">the</span> <span class="pygments-n">move</span> <span class="pygments-n">that</span> <span class="pygments-n">results</span> <span class="pygments-ow">in</span> <span class="pygments-n">the</span> <span class="pygments-n">highest</span> <span class="pygments-n">score</span> <span class="pygments-k">for</span> <span class="pygments-n">this</span> <span class="pygments-n">player</span><span class="pygments-s1">&#39;s goal (i.e.,</span></span>
+  <span class="gbold line-num">350</span>          <span class="highlight-pyta"><span class="pygments-n">disregarding</span> <span class="pygments-n">penalties</span><span class="pygments-p">)</span><span class="pygments-o">.</span></span>
+  <span class="gbold line-num">351</span>  <span class="highlight-pyta"></span>
+  <span class="gbold line-num">352</span>          <span class="highlight-pyta"><span class="pygments-n">A</span> <span class="pygments-n">valid</span> <span class="pygments-n">move</span> <span class="pygments-ow">is</span> <span class="pygments-n">a</span> <span class="pygments-n">move</span> <span class="pygments-n">other</span> <span class="pygments-n">than</span> <span class="pygments-n">PASS</span> <span class="pygments-n">that</span> <span class="pygments-n">can</span> <span class="pygments-n">be</span> <span class="pygments-n">successfully</span></span>
+  <span class="gbold line-num">353</span>          <span class="highlight-pyta"><span class="pygments-n">performed</span> <span class="pygments-n">on</span> <span class="pygments-n">the</span> <span class="pygments-o">&lt;</span><span class="pygments-n">board</span><span class="pygments-o">&gt;.</span> <span class="pygments-n">If</span> <span class="pygments-n">no</span> <span class="pygments-n">move</span> <span class="pygments-n">can</span> <span class="pygments-n">be</span> <span class="pygments-n">found</span> <span class="pygments-n">that</span> <span class="pygments-ow">is</span> <span class="pygments-n">better</span> <span class="pygments-n">than</span></span>
+  <span class="gbold line-num">354</span>          <span class="highlight-pyta"><span class="pygments-n">the</span> <span class="pygments-n">current</span> <span class="pygments-n">score</span><span class="pygments-p">,</span> <span class="pygments-n">this</span> <span class="pygments-n">player</span> <span class="pygments-n">will</span> <span class="pygments-k">pass</span><span class="pygments-o">.</span></span>
+  <span class="gbold line-num">355</span>  <span class="highlight-pyta"></span>
+  <span class="gbold line-num">356</span>          <span class="highlight-pyta"><span class="pygments-n">This</span> <span class="pygments-n">function</span> <span class="pygments-n">does</span> <span class="pygments-ow">not</span> <span class="pygments-n">mutate</span> <span class="pygments-o">&lt;</span><span class="pygments-n">board</span><span class="pygments-o">&gt;.</span></span>
+  <span class="gbold line-num">357</span>          <span class="highlight-pyta"><span class="pygments-s2">&quot;&quot;&quot;</span></span>
+  <span class="gbold line-num">358</span>          <span class="highlight-pyta"><span class="pygments-k">if</span> <span class="pygments-ow">not</span> <span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">_proceed</span><span class="pygments-p">:</span></span>
+  <span class="gbold line-num">359</span>              <span class="highlight-pyta"><span class="pygments-k">return</span> <span class="pygments-kc">None</span>  <span class="pygments-c1"># Do not remove</span></span>
+  <span class="gbold line-num">360</span>          <span class="highlight-pyta"><span class="pygments-k">else</span><span class="pygments-p">:</span></span>
+  <span class="gbold line-num">361</span>              <span class="highlight-pyta"><span class="pygments-c1"># TODO: Implement Me</span></span>
+  <span class="gbold line-num">362</span>              <span class="highlight-pyta"><span class="pygments-n">curr</span> <span class="pygments-o">=</span> <span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">goal</span><span class="pygments-o">.</span><span class="pygments-n">score</span><span class="pygments-p">(</span><span class="pygments-n">board</span><span class="pygments-p">)</span></span>
+  <span class="gbold line-num">363</span>              <span class="highlight-pyta"><span class="pygments-n">possible_actions</span> <span class="pygments-o">=</span> <span class="pygments-p">[]</span></span>
+  <span class="gbold line-num">364</span>              <span class="highlight-pyta"><span class="pygments-n">possible_scores</span> <span class="pygments-o">=</span> <span class="pygments-p">[]</span></span>
+  <span class="gbold line-num">365</span>              <span class="highlight-pyta"><span class="pygments-n">actions</span> <span class="pygments-o">=</span> <span class="pygments-p">[</span><span class="pygments-n">ROTATE_CLOCKWISE</span><span class="pygments-p">,</span> <span class="pygments-n">ROTATE_COUNTER_CLOCKWISE</span><span class="pygments-p">,</span></span>
+  <span class="gbold line-num">366</span>                         <span class="highlight-pyta"><span class="pygments-n">SWAP_HORIZONTAL</span><span class="pygments-p">,</span> <span class="pygments-n">SWAP_VERTICAL</span><span class="pygments-p">,</span> <span class="pygments-n">SMASH</span><span class="pygments-p">,</span> <span class="pygments-n">COMBINE</span><span class="pygments-p">,</span> <span class="pygments-n">PAINT</span><span class="pygments-p">]</span></span>
+  <span class="gbold line-num">367</span>  <span class="highlight-pyta"></span>
+  <span class="gbold line-num">368</span>              <span class="highlight-pyta"><span class="pygments-c1"># get self._difficulty number of random moves</span></span>
+  <span class="gbold line-num">369</span>              <span class="highlight-pyta"><span class="pygments-k">for</span> <span class="pygments-n">_</span> <span class="pygments-ow">in</span> <span class="pygments-nb">range</span><span class="pygments-p">(</span><span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">_difficulty</span><span class="pygments-p">):</span></span>
+  <span class="gbold line-num">370</span>                  <span class="highlight-pyta"><span class="pygments-n">m</span> <span class="pygments-o">=</span> <span class="pygments-n">_get_random_action</span><span class="pygments-p">(</span><span class="pygments-n">actions</span><span class="pygments-p">)</span></span>
+  <span class="gbold line-num">371</span>                  <span class="highlight-pyta"><span class="pygments-n">blocky</span> <span class="pygments-o">=</span> <span class="pygments-n">board</span><span class="pygments-o">.</span><span class="pygments-n">create_copy</span><span class="pygments-p">()</span></span>
+  <span class="gbold line-num">372</span>                  <span class="highlight-pyta"><span class="pygments-k">if</span> <span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">_check_action_validity</span><span class="pygments-p">(</span><span class="pygments-n">m</span><span class="pygments-p">,</span> <span class="pygments-n">blocky</span><span class="pygments-p">):</span></span>
+  <span class="gbold line-num">373</span>                      <span class="highlight-pyta"><span class="pygments-n">possible_actions</span><span class="pygments-o">.</span><span class="pygments-n">append</span><span class="pygments-p">((</span><span class="pygments-n">m</span><span class="pygments-p">,</span> <span class="pygments-n">blocky</span><span class="pygments-p">))</span></span>
+  <span class="gbold line-num">374</span>  <span class="highlight-pyta"></span>
+  <span class="gbold line-num">375</span>              <span class="highlight-pyta"><span class="pygments-c1"># get score</span></span>
+  <span class="gbold line-num">376</span>              <span class="highlight-pyta"><span class="pygments-k">for</span> <span class="pygments-n">i</span> <span class="pygments-ow">in</span> <span class="pygments-nb">range</span><span class="pygments-p">(</span><span class="pygments-nb">len</span><span class="pygments-p">(</span><span class="pygments-n">possible_actions</span><span class="pygments-p">)):</span></span>
+  <span class="gbold line-num">377</span>                  <span class="highlight-pyta"><span class="pygments-n">blocky</span> <span class="pygments-o">=</span> <span class="pygments-n">possible_actions</span><span class="pygments-p">[</span><span class="pygments-n">i</span><span class="pygments-p">][</span><span class="pygments-o">-</span><span class="pygments-mi">1</span><span class="pygments-p">]</span></span>
+  <span class="gbold line-num">378</span>                  <span class="highlight-pyta"><span class="pygments-n">possible_scores</span><span class="pygments-o">.</span><span class="pygments-n">append</span><span class="pygments-p">(</span><span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">goal</span><span class="pygments-o">.</span><span class="pygments-n">score</span><span class="pygments-p">(</span><span class="pygments-n">blocky</span><span class="pygments-p">))</span></span>
+  <span class="gbold line-num">379</span>  <span class="highlight-pyta"></span>
+  <span class="gbold line-num">380</span>              <span class="highlight-pyta"><span class="pygments-c1"># get max score</span></span>
+  <span class="gbold line-num">381</span>              <span class="highlight-pyta"><span class="pygments-n">_max</span> <span class="pygments-o">=</span> <span class="pygments-nb">max</span><span class="pygments-p">(</span><span class="pygments-n">possible_scores</span><span class="pygments-p">)</span></span>
+  <span class="gbold line-num">382</span>              <span class="highlight-pyta"><span class="pygments-n">index</span> <span class="pygments-o">=</span> <span class="pygments-n">possible_scores</span><span class="pygments-o">.</span><span class="pygments-n">index</span><span class="pygments-p">(</span><span class="pygments-n">_max</span><span class="pygments-p">)</span></span>
+  <span class="gbold line-num">383</span>  <span class="highlight-pyta"></span>
+  <span class="gbold line-num">384</span>              <span class="highlight-pyta"><span class="pygments-c1"># if max score == current score: pass</span></span>
+  <span class="gbold line-num">385</span>              <span class="highlight-pyta"><span class="pygments-k">if</span> <span class="pygments-n">curr</span> <span class="pygments-o">==</span> <span class="pygments-n">_max</span><span class="pygments-p">:</span></span>
+  <span class="gbold line-num">386</span>                  <span class="highlight-pyta"><span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">_proceed</span> <span class="pygments-o">=</span> <span class="pygments-kc">False</span>  <span class="pygments-c1"># Must set to False before returning!</span></span>
+  <span class="gbold line-num">387</span>                  <span class="highlight-pyta"><span class="pygments-n">_create_move</span><span class="pygments-p">(</span><span class="pygments-n">PASS</span><span class="pygments-p">,</span> <span class="pygments-n">board</span><span class="pygments-p">)</span></span>
+  <span class="gbold line-num">388</span>              <span class="highlight-pyta"><span class="pygments-c1"># else return action with max score</span></span>
+  <span class="gbold line-num">389</span>              <span class="highlight-pyta"><span class="pygments-k">else</span><span class="pygments-p">:</span></span>
+  <span class="gbold line-num">390</span>                  <span class="highlight-pyta"><span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">_proceed</span> <span class="pygments-o">=</span> <span class="pygments-kc">False</span>  <span class="pygments-c1"># Must set to False before returning!</span></span>
+  <span class="gbold line-num">391</span>                  <span class="highlight-pyta"><span class="pygments-k">return</span> <span class="pygments-n">_create_move</span><span class="pygments-p">(</span><span class="pygments-n">possible_actions</span><span class="pygments-p">[</span><span class="pygments-n">index</span><span class="pygments-p">][</span><span class="pygments-mi">0</span><span class="pygments-p">],</span> <span class="pygments-n">board</span><span class="pygments-p">)</span></span>
+  <span class="grey line-num">392</span>  <span class="grey"></span>
+  <span class="grey line-num">393</span>  <span class="grey"></span>
+</code>
+                                      
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                        </div>
+                        
+                        <div class="error-instance">
+
+                            <div class="info">
+                                <span class="error-link style-error-id">
+                                    <a href="http://www.cs.toronto.edu/~david/pyta/&#35;E9994" target="_blank">&#10064; E9994 (unnecessary-indexing)</a>
+                                </span>
+                                <span class="occurrences">
+                                1
+                                
+                                 occurrence.
+                                
+                                </span>
+                                <span class="shown">
+                                
+                                </span>
+                                <span class="slider">
+                                   <button> Expand/Collapse </button>
+                                </span>
+                            </div>
+
+                            <div class="message-container collapsible">
+                                
+                                <div class="message">
+                                    <h4 class="message-name">
+                                        [Line 376] For loop variable "i" can be simplified
+                                        <span class="slider">
+                                            <button style="float: right; background: #458B00;"> Expand/Collapse </button>
+                                        </span>
+                                    </h4>
+                                    <div class="collapsible">
+                                      
+                                      <code>  <span class="grey line-num">374</span>  <span class="grey"></span>
+  <span class="grey line-num">375</span>              <span class="grey"><span class="pygments-c1"># get score</span></span>
+  <span class="gbold line-num">376</span>              <span class="black"><span class="pygments-k">for</span> </span><span class="highlight-pyta"><span class="pygments-n">i</span></span> <span class="black"><span class="pygments-ow">in</span> <span class="pygments-nb">range</span><span class="pygments-p">(</span><span class="pygments-nb">len</span><span class="pygments-p">(</span><span class="pygments-n">possible_actions</span><span class="pygments-p">)):</span></span>
+  <span class="grey line-num">377</span>                  <span class="grey"><span class="pygments-n">blocky</span> <span class="pygments-o">=</span> <span class="pygments-n">possible_actions</span><span class="pygments-p">[</span><span class="pygments-n">i</span><span class="pygments-p">][</span><span class="pygments-o">-</span><span class="pygments-mi">1</span><span class="pygments-p">]</span></span>
+  <span class="grey line-num">378</span>                  <span class="grey"><span class="pygments-n">possible_scores</span><span class="pygments-o">.</span><span class="pygments-n">append</span><span class="pygments-p">(</span><span class="pygments-bp">self</span><span class="pygments-o">.</span><span class="pygments-n">goal</span><span class="pygments-o">.</span><span class="pygments-n">score</span><span class="pygments-p">(</span><span class="pygments-n">blocky</span><span class="pygments-p">))</span></span>
+</code>
+                                      
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                        </div>
                         
                     </div>
                 </article>
