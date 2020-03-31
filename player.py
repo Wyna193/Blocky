@@ -370,8 +370,8 @@ class SmartPlayer(Player):
                     possible_actions.append((m, blocky))
 
             # get score
-            for i in range(len(possible_actions)):
-                blocky = possible_actions[i][-1]
+            for x in possible_actions:
+                blocky = x[-1]
                 possible_scores.append(self.goal.score(blocky))
 
             # get max score

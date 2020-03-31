@@ -69,7 +69,7 @@ def generate_goals(num_goals: int) -> List[Goal]:
 def _grid(flattened: List[List[Tuple[int, int, int]]]) -> List[List[int]]:
     """Returns a flattened block with -1 in the position of each cell."""
     r = []
-    for _ in range(len(flattened)):
+    for _ in flattened:
         column = []
         for _ in range(len(flattened)):
             column.append(-1)

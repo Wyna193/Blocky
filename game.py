@@ -143,4 +143,3 @@ if __name__ == '__main__':
     # Run the game for 5 turns
     game.run_game(15)
     pygame.quit()
-
