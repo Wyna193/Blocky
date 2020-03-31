@@ -466,6 +466,7 @@ class TestGoal:
         v = _grid(flattened_board_16x16)
         assert v == visited_board_16x16
 
+
 if __name__ == '__main__':
     pytest.main(['example_tests.py'])
 
