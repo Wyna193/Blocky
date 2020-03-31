@@ -47,15 +47,6 @@ def generate_board(max_depth: int, size: int) -> Block:
 
     return board
 
-
-def _update_descendents(block: Block) -> None:
-    """Update position of block's descendants, given that blocky has kids. """
-    # blocky's position is already changed in the methods
-    for blocky in block.children:
-        if blocky.children:
-            blocky._update_children_positions(blocky.position)
-
-
 class Block:
     """A square Block in the Blocky game, represented as a tree.
 
@@ -200,6 +191,8 @@ class Block:
         # set the children Blocks with positions as appropriate
         for i in range(len(self.children)):
             self.children[i].position = child_pos[i]
+        for blocky in self.children:
+            blocky._update_children_positions(blocky.position)
 
     def smashable(self) -> bool:
         """Return True iff this block can be smashed.
@@ -246,83 +239,83 @@ class Block:
                     self.colour = random.choice(COLOUR_LIST)
             return True
 
-    def _swap_vertical(self) -> None:
-        """Swaps the contents of block by reflecting on the x axis."""
-        cp = self._children_positions()  # a list of children's position
-        tr, tl, bl, br = cp[0], cp[1], cp[2], cp[3]
-        for block in self.children:
-            # Case: child has no children --> directly swap
-            if not block.children:
-                if block == self.children[0]:
-                    block.position = br
-                elif block == self.children[1]:
-                    block.position = bl
-                elif block == self.children[2]:
-                    block.position = tl
-                elif block == self.children[3]:
-                    block.position = tr
-
-            else:
-                # we know that this block has children
-                if block == self.children[0]:
-                    block.position = br
-                    block._update_children_positions(br)
-                    _update_descendents(block)
-                elif block == self.children[1]:
-                    block.position = bl
-                    block._update_children_positions(bl)
-                    _update_descendents(block)
-                elif block == self.children[2]:
-                    block.position = tl
-                    block._update_children_positions(tl)
-                    _update_descendents(block)
-                elif block == self.children[3]:
-                    block.position = tr
-                    block._update_children_positions(tr)
-                    _update_descendents(block)
-
-        # once all the blockies' position are changed, put them in right order
-        self.children = [self.children[3], self.children[2],
-                         self.children[1], self.children[0]]
-
-    def _swap_horizontal(self) -> None:
-        """Swaps the contents of block by reflecting on the y axis."""
-        cp = self._children_positions()  # a list of children's position
-        tr, tl, bl, br = cp[0], cp[1], cp[2], cp[3]
-        for block in self.children:
-            # Case: child has no children --> directly swap
-            if not block.children:
-                if block == self.children[0]:
-                    block.position = tl
-                elif block == self.children[1]:
-                    block.position = tr
-                elif block == self.children[2]:
-                    block.position = br
-                elif block == self.children[3]:
-                    block.position = bl
-
-            else:
-                # we know that this block has children
-                if block == self.children[0]:
-                    block.position = tl
-                    block._update_children_positions(tl)
-                    _update_descendents(block)
-                elif block == self.children[1]:
-                    block.position = tr
-                    block._update_children_positions(tr)
-                    _update_descendents(block)
-                elif block == self.children[2]:
-                    block.position = br
-                    block._update_children_positions(br)
-                    _update_descendents(block)
-                elif block == self.children[3]:
-                    block.position = bl
-                    block._update_children_positions(bl)
-                    _update_descendents(block)
-
-        # once all the blockies' position are changed, put them in right order
-        self.children = [self.children[1], self.children[0],
-                         self.children[3], self.children[2]]
+    # def _swap_vertical(self) -> None:
+    #     """Swaps the contents of block by reflecting on the x axis."""
+    #     cp = self._children_positions()  # a list of children's position
+    #     tr, tl, bl, br = cp[0], cp[1], cp[2], cp[3]
+    #     for block in self.children:
+    #         # Case: child has no children --> directly swap
+    #         if not block.children:
+    #             if block == self.children[0]:
+    #                 block.position = br
+    #             elif block == self.children[1]:
+    #                 block.position = bl
+    #             elif block == self.children[2]:
+    #                 block.position = tl
+    #             elif block == self.children[3]:
+    #                 block.position = tr
+    #
+    #         else:
+    #             # we know that this block has children
+    #             if block == self.children[0]:
+    #                 block.position = br
+    #                 block._update_children_positions(br)
+    #                 _update_descendents(block)
+    #             elif block == self.children[1]:
+    #                 block.position = bl
+    #                 block._update_children_positions(bl)
+    #                 _update_descendents(block)
+    #             elif block == self.children[2]:
+    #                 block.position = tl
+    #                 block._update_children_positions(tl)
+    #                 _update_descendents(block)
+    #             elif block == self.children[3]:
+    #                 block.position = tr
+    #                 block._update_children_positions(tr)
+    #                 _update_descendents(block)
+    #
+    #     # once all the blockies' position are changed, put them in right order
+    #     self.children = [self.children[3], self.children[2],
+    #                      self.children[1], self.children[0]]
+    #
+    # def _swap_horizontal(self) -> None:
+    #     """Swaps the contents of block by reflecting on the y axis."""
+    #     cp = self._children_positions()  # a list of children's position
+    #     tr, tl, bl, br = cp[0], cp[1], cp[2], cp[3]
+    #     for block in self.children:
+    #         # Case: child has no children --> directly swap
+    #         if not block.children:
+    #             if block == self.children[0]:
+    #                 block.position = tl
+    #             elif block == self.children[1]:
+    #                 block.position = tr
+    #             elif block == self.children[2]:
+    #                 block.position = br
+    #             elif block == self.children[3]:
+    #                 block.position = bl
+    #
+    #         else:
+    #             # we know that this block has children
+    #             if block == self.children[0]:
+    #                 block.position = tl
+    #                 block._update_children_positions(tl)
+    #                 _update_descendents(block)
+    #             elif block == self.children[1]:
+    #                 block.position = tr
+    #                 block._update_children_positions(tr)
+    #                 _update_descendents(block)
+    #             elif block == self.children[2]:
+    #                 block.position = br
+    #                 block._update_children_positions(br)
+    #                 _update_descendents(block)
+    #             elif block == self.children[3]:
+    #                 block.position = bl
+    #                 block._update_children_positions(bl)
+    #                 _update_descendents(block)
+    #
+    #     # once all the blockies' position are changed, put them in right order
+    #     self.children = [self.children[1], self.children[0],
+    #                      self.children[3], self.children[2]]
 
     def swap(self, direction: int) -> bool:
         """Swap the child Blocks of this Block.
@@ -342,29 +335,28 @@ class Block:
             # block has children and we're swapping them
             if direction == 0:
                 pos = self._children_positions()
-                self._swap_horizontal()
-                # self.children[0].position, \
-                # self.children[1].position, \
-                # self.children[2].position, \
-                # self.children[3].position = pos[1], pos[0], pos[3], pos[2]
-                #
-                # self.children = [self.children[1], self.children[0],
-                #                  self.children[3], self.children[2]]
+
+                self.children[0].position, \
+                self.children[1].position, \
+                self.children[2].position, \
+                self.children[3].position = pos[1], pos[0], pos[3], pos[2]
+
+                self.children = [self.children[1], self.children[0],
+                                 self.children[3], self.children[2]]
             else:
                 # direction == 1
 
                 pos = self._children_positions()
-                self._swap_vertical()
-                # self.children[0].position, \
-                # self.children[1].position, \
-                # self.children[2].position, \
-                # self.children[3].position = pos[3], pos[2], pos[1], pos[0]
-                #
-                # self.children = [self.children[3], self.children[2],
-                #                  self.children[1], self.children[0]]
+
+                self.children[0].position, \
+                self.children[1].position, \
+                self.children[2].position, \
+                self.children[3].position = pos[3], pos[2], pos[1], pos[0]
+
+                self.children = [self.children[3], self.children[2],
+                                 self.children[1], self.children[0]]
 
             for block in self.children:
-                # block.swap(direction)
                 block._update_children_positions(block.position)
 
             return True
@@ -511,7 +503,9 @@ class Block:
                 else:
                     colours[block.colour] += 1
 
-            if max(colours.values()) > 2:
+
+            if (max(colours.values()) > 2 and len(colours.values()) >= 2) or \
+                    (max(colours.values()) == 2 and len(colours.values()) > 2) :
                 colour = max(colours, key=colours.get)
                 self.children = []
                 self.colour = colour
