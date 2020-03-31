@@ -117,7 +117,7 @@ def board_16x16_swap1() -> Block:
 
     # Level 2
     colours = [COLOUR_LIST[0], COLOUR_LIST[1], COLOUR_LIST[1], COLOUR_LIST[3]]
-    set_children(board.children[1], colours)
+    set_children(board.children[3], colours)
 
     return board
 
@@ -270,7 +270,7 @@ class TestBlock:
         """Test that the reference board can be correctly swapped along the
         horizontal plane.
         """
-        board_16x16.swap(0)
+        board_16x16.swap(1)
         assert board_16x16 == board_16x16_swap1
 
     def test_rotate1(self, board_16x16, board_16x16_rotate1) -> None:

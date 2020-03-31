@@ -259,7 +259,7 @@ class Block:
                     block.position = bl
                 elif block == self.children[2]:
                     block.position = tl
-                else:
+                elif block == self.children[3]:
                     block.position = tr
 
             else:
@@ -276,7 +276,7 @@ class Block:
                     block.position = tl
                     block._update_children_positions(tl)
                     _update_descendents(block)
-                else:
+                elif block == self.children[3]:
                     block.position = tr
                     block._update_children_positions(tr)
                     _update_descendents(block)
@@ -298,7 +298,7 @@ class Block:
                     block.position = tr
                 elif block == self.children[2]:
                     block.position = br
-                else:
+                elif block == self.children[3]:
                     block.position = bl
 
             else:
@@ -315,11 +315,12 @@ class Block:
                     block.position = br
                     block._update_children_positions(br)
                     _update_descendents(block)
-                else:
+                elif block == self.children[3]:
                     block.position = bl
                     block._update_children_positions(bl)
                     _update_descendents(block)
 
+        # once all the blockies' position are changed, put them in right order
         self.children = [self.children[1], self.children[0],
                          self.children[3], self.children[2]]
 
@@ -341,41 +342,33 @@ class Block:
             # block has children and we're swapping them
             if direction == 0:
                 pos = self._children_positions()
-
-                self.children[0].position, \
-                self.children[1].position, \
-                self.children[2].position, \
-                self.children[3].position = pos[1], pos[0], pos[3], pos[2]
-
-                self.children = [self.children[1], self.children[0],
-                                 self.children[3], self.children[2]]
+                self._swap_horizontal()
+                # self.children[0].position, \
+                # self.children[1].position, \
+                # self.children[2].position, \
+                # self.children[3].position = pos[1], pos[0], pos[3], pos[2]
+                #
+                # self.children = [self.children[1], self.children[0],
+                #                  self.children[3], self.children[2]]
             else:
                 # direction == 1
 
                 pos = self._children_positions()
-
-                self.children[0].position, \
-                self.children[1].position, \
-                self.children[2].position, \
-                self.children[3].position = pos[3], pos[2], pos[1], pos[0]
-
-                self.children = [self.children[3], self.children[2],
-                                 self.children[1], self.children[0]]
+                self._swap_vertical()
+                # self.children[0].position, \
+                # self.children[1].position, \
+                # self.children[2].position, \
+                # self.children[3].position = pos[3], pos[2], pos[1], pos[0]
+                #
+                # self.children = [self.children[3], self.children[2],
+                #                  self.children[1], self.children[0]]
 
             for block in self.children:
-                block.swap(direction)
-                # block._update_children_positions(block.position)
+                # block.swap(direction)
+                block._update_children_positions(block.position)
 
             return True
 
-            # # Swap Vertically
-            # if direction == 1:
-            #     self._swap_vertical()
-            #     return True
-            # # Swap Horizontally
-            # else:
-            #     self._swap_horizontal()
-            #     return True
 
     def _cw_rotation(self, direction) -> None:
         """The clockwise rotation of blocks and its descendants"""
