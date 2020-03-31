@@ -217,7 +217,6 @@ class Block:
             return False
 
         else:
-            self.colour = None
             child_pos = self._children_positions()
 
             # Append self.children with 4 blocks
@@ -237,6 +236,7 @@ class Block:
                 else:
                     # Set this blocky's colour to a random one
                     self.colour = random.choice(COLOUR_LIST)
+            self.colour = None
             return True
 
     def swap(self, direction: int) -> bool:
