@@ -186,8 +186,8 @@ class Block:
         # TODO: Implement me
 
         # use _children_position to get the positions of children
-        child_pos = self._children_positions()
         self.position = position
+        child_pos = self._children_positions()
         # set the children Blocks with positions as appropriate
         for i in range(len(self.children)):
             self.children[i].position = child_pos[i]

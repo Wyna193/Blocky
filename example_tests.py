@@ -516,6 +516,7 @@ class TestGoal:
             assert goal.score(board_16x16) == expected
 
     def test_blob_goal_only_middle(self, board_16x16_blobby) -> None:
+        """Tests for only the middle of blob."""
         correct_scores = [
             (COLOUR_LIST[0], 0),
             (COLOUR_LIST[1], 1),
@@ -527,6 +528,20 @@ class TestGoal:
         for colour, expected in correct_scores:
             goal = BlobGoal(colour)
             assert goal.score(board_16x16_blobby) == expected
+
+    def test_blob_goal_sides(self, board_16x16_perimeter) -> None:
+        correct_scores = [
+            (COLOUR_LIST[0], 1),
+            (COLOUR_LIST[1], 1),
+            (COLOUR_LIST[2], 12),
+            (COLOUR_LIST[3], 1)
+        ]
+
+        # Set up a goal for each colour and check the results
+        for colour, expected in correct_scores:
+            goal = BlobGoal(colour)
+            score = goal.score(board_16x16_perimeter)
+            # assert goal.score(board_16x16_perimeter) == expected
 
     def test_perimeter_goal(self, board_16x16):
         correct_scores = [
@@ -555,6 +570,20 @@ class TestGoal:
             goal = PerimeterGoal(colour)
             assert goal.score(board_16x16_perimeter) == expected
 
+    def test_perimeter_goal_only_corners(self, board_16x16_blobby):
+        """Tests that the blobs in the middle are not counted to the score"""
+        correct_scores = [
+            (COLOUR_LIST[0], 0),
+            (COLOUR_LIST[1], 6),
+            (COLOUR_LIST[2], 8),
+            (COLOUR_LIST[3], 2)
+        ]
+
+        # Set up a goal for each colour and check results.
+        for colour, expected in correct_scores:
+            goal = PerimeterGoal(colour)
+            assert goal.score(board_16x16_blobby) == expected
+
     def test_generate_goals(self) -> None:
         """Tests generate_goal, testing that there are no duplicates """
         goals = generate_goals(4)
@@ -576,6 +605,18 @@ class TestGoal:
         v = _grid(flattened_board_16x16)
         assert v == visited_board_16x16
 
+    def test__undiscovered_blob_size(self, flattened_board_16x16,
+                                     visited_board_16x16) -> None:
+        """Tests _undiscovered_blob_size"""
+        # Set up a goal for colour and check the results
+        flattened = flattened_board_16x16
+        visited = visited_board_16x16
+        goal = BlobGoal(COLOUR_LIST[2])
+        g = goal._undiscovered_blob_size((0, 0), flattened, visited)
+        assert g == 4
+        goal2 = BlobGoal(COLOUR_LIST[3])
+        g2 = goal2._undiscovered_blob_size((0, 0), flattened, visited)
+        assert g2 == 0
 
 if __name__ == '__main__':
     pytest.main(['example_tests.py'])

@@ -317,12 +317,6 @@ class RandomPlayer(Player):
                     self._proceed = False  # Must set to False before returning!
                     return move
 
-            # if self._check_action_validity(m, block):
-            #     move = _create_move(m, block)
-            #     self._proceed = False  # Must set to False before returning!
-            #     return move
-            # return self.generate_move(board)
-
 
 
 
