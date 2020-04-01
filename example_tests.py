@@ -31,7 +31,7 @@ import pytest
 from block import Block
 from blocky import _block_to_squares
 from goal import BlobGoal, PerimeterGoal, _flatten, generate_goals, _grid
-from player import _get_block
+from player import Player, _get_block, create_players
 from renderer import Renderer
 from settings import COLOUR_LIST
 
@@ -104,6 +104,7 @@ def board_16x16_swap0() -> Block:
 
     return board
 
+
 @pytest.fixture
 def board_16x16_swap1() -> Block:
     """Create a reference board that is swapped along the vertical plane.
@@ -120,6 +121,7 @@ def board_16x16_swap1() -> Block:
     set_children(board.children[3], colours)
 
     return board
+
 
 @pytest.fixture
 def board_16x16_rotate1() -> Block:
@@ -139,6 +141,7 @@ def board_16x16_rotate1() -> Block:
 
     return board
 
+
 @pytest.fixture
 def board_16x16_rotate3() -> Block:
     """Create a reference board where the top-right block on level 1 has been
@@ -157,6 +160,7 @@ def board_16x16_rotate3() -> Block:
 
     return board
 
+
 @pytest.fixture
 def board_16x16_paint() -> Block:
     """Create a reference board where the top-right block on level 2 is painted.
@@ -173,6 +177,7 @@ def board_16x16_paint() -> Block:
     set_children(board.children[0], colours)
 
     return board
+
 
 @pytest.fixture
 def board_16x16_copy() -> Block:
@@ -191,6 +196,7 @@ def board_16x16_copy() -> Block:
 
     return board
 
+
 @pytest.fixture
 def board_16x16_combine() -> Block:
     """Create a reference board with a size of 750 and a max_depth of 2.
@@ -204,6 +210,7 @@ def board_16x16_combine() -> Block:
 
     return board
 
+
 @pytest.fixture
 def flattened_board_16x16() -> List[List[Tuple[int, int, int]]]:
     """Create a list of the unit cells inside the reference board."""
@@ -214,6 +221,7 @@ def flattened_board_16x16() -> List[List[Tuple[int, int, int]]]:
         [COLOUR_LIST[0], COLOUR_LIST[3], COLOUR_LIST[3], COLOUR_LIST[3]]
     ]
 
+
 @pytest.fixture
 def visited_board_16x16() -> List[List[int]]:
     """Create a list of -1 parallel to a flattened board."""
@@ -223,6 +231,7 @@ def visited_board_16x16() -> List[List[int]]:
         [-1, -1, -1, -1],
         [-1, -1, -1, -1]
     ]
+
 
 @pytest.fixture
 def board_16x16_perimeter() -> Block:
@@ -250,6 +259,7 @@ def board_16x16_perimeter() -> Block:
 
     return board
 
+
 @pytest.fixture
 def board_16x16_blobby() -> Block:
     """Create a reference board with a size of 750 and a max_depth of 2.
@@ -275,6 +285,7 @@ def board_16x16_blobby() -> Block:
     set_children(board.children[3], colours3)
 
     return board
+
 
 # =============================================================================
 
@@ -307,8 +318,8 @@ def test_block_to_squares_reference(board_16x16) -> None:
 
     assert squares == expected
 
-# =============================================================================
 
+# =============================================================================
 
 
 class TestRender:
@@ -318,6 +329,7 @@ class TestRender:
     NOTE: this requires that your blocky._block_to_squares function is working
     correctly.
     """
+
     def test_render_reference_board(self, renderer, board_16x16) -> None:
         """Render the reference board to a file so that you can view it on your
         computer."""
@@ -359,6 +371,7 @@ class TestBlock:
     NOTE: this is a small subset of tests - just because you pass them does NOT
     mean you have a fully working implementation of the Block class.
     """
+
     def test_smash_on_child(self, child_block) -> None:
         """Test that a child block cannot be smashed.
         """
@@ -423,7 +436,7 @@ class TestBlock:
         level 2.
         """
         board_16x16.children[0].children[0].paint(COLOUR_LIST[3])
-        assert  board_16x16 == board_16x16_paint
+        assert board_16x16 == board_16x16_paint
 
     def test_combine(self, board_16x16, board_16x16_combine) -> None:
         """Tests that combine works on the top right block of reference bord on
@@ -445,6 +458,7 @@ class TestPlayer:
      NOTE: this is a small subset of tests - just because you pass them does NOT
      mean you have a fully working implementation.
     """
+
     def test_get_block_top_left(self, board_16x16) -> None:
         """Test that the correct block is retrieved from the reference board
         when requesting the top-left corner of the board.
@@ -461,8 +475,20 @@ class TestPlayer:
         assert _get_block(board_16x16, top_right, 0) == board_16x16
         assert _get_block(board_16x16, top_right, 1) == board_16x16.children[0]
         assert _get_block(board_16x16, top_right, 2) == \
-            board_16x16.children[0].children[0]
+               board_16x16.children[0].children[0]
 
+    def test_create_players(self) -> None:
+        hp = create_players(3, 0, [])
+        for player in hp:
+            assert player.id in range(0, 3)
+        hrp = create_players(1, 3, [])
+        for player in hrp:
+            assert player.id in range(0, 4)
+        hrsp = create_players(1, 1, [3, 4])
+        for player in hrsp:
+            assert player.id in range(0, 4)
+        assert hrsp[2]._difficulty == 3
+        assert hrsp[3]._difficulty == 4
 
 
 class TestGoal:
@@ -471,6 +497,7 @@ class TestGoal:
      NOTE: this is a small subset of tests - just because you pass them does NOT
      mean you have a fully working implementation of the Goal sub-classes.
     """
+
     def test_block_flatten(self, board_16x16, flattened_board_16x16) -> None:
         """Test that flattening the reference board results in the expected list
         of colours.
@@ -494,7 +521,8 @@ class TestGoal:
         set_children(board, colours)
 
         # Level 2
-        colours = [COLOUR_LIST[0], COLOUR_LIST[1], COLOUR_LIST[1], COLOUR_LIST[3]]
+        colours = [COLOUR_LIST[0], COLOUR_LIST[1], COLOUR_LIST[1],
+                   COLOUR_LIST[3]]
         set_children(board.children[0], colours)
 
         result = _flatten(board)
@@ -618,7 +646,6 @@ class TestGoal:
         g2 = goal2._undiscovered_blob_size((0, 0), flattened, visited)
         assert g2 == 0
 
+
 if __name__ == '__main__':
     pytest.main(['example_tests.py'])
-
-
