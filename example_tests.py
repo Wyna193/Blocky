@@ -250,6 +250,32 @@ def board_16x16_perimeter() -> Block:
 
     return board
 
+@pytest.fixture
+def board_16x16_blobby() -> Block:
+    """Create a reference board with a size of 750 and a max_depth of 2.
+    """
+    # Level 0
+    board = Block((0, 0), 750, None, 0, 2)
+
+    # Level 1
+    colours = [None, None, None, None]
+    set_children(board, colours)
+
+    # Level 2
+    colours0 = [COLOUR_LIST[1], COLOUR_LIST[2], COLOUR_LIST[2], COLOUR_LIST[2]]
+    set_children(board.children[0], colours0)
+
+    colours1 = [COLOUR_LIST[2], COLOUR_LIST[1], COLOUR_LIST[2], COLOUR_LIST[2]]
+    set_children(board.children[1], colours1)
+
+    colours2 = [COLOUR_LIST[2], COLOUR_LIST[2], COLOUR_LIST[1], COLOUR_LIST[2]]
+    set_children(board.children[2], colours2)
+
+    colours3 = [COLOUR_LIST[2], COLOUR_LIST[2], COLOUR_LIST[2], COLOUR_LIST[3]]
+    set_children(board.children[3], colours3)
+
+    return board
+
 # =============================================================================
 
 
@@ -488,6 +514,19 @@ class TestGoal:
         for colour, expected in correct_scores:
             goal = BlobGoal(colour)
             assert goal.score(board_16x16) == expected
+
+    def test_blob_goal_only_middle(self, board_16x16_blobby) -> None:
+        correct_scores = [
+            (COLOUR_LIST[0], 0),
+            (COLOUR_LIST[1], 1),
+            (COLOUR_LIST[2], 12),
+            (COLOUR_LIST[3], 1)
+        ]
+
+        # Set up a goal for each colour and check the results
+        for colour, expected in correct_scores:
+            goal = BlobGoal(colour)
+            assert goal.score(board_16x16_blobby) == expected
 
     def test_perimeter_goal(self, board_16x16):
         correct_scores = [
