@@ -114,7 +114,7 @@ def create_sample_game() -> Game:
     """Run a sample game with one human player, one random player,
     and one smart player.
     """
-    return Game(3, 0, 1, [6])
+    return Game(3, 1, 1, [6])
 
 
 if __name__ == '__main__':
@@ -141,5 +141,5 @@ if __name__ == '__main__':
     # game = create_solitaire_game()
 
     # Run the game for 5 turns
-    game.run_game(15)
+    game.run_game(50)
     pygame.quit()

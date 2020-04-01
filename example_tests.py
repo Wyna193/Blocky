@@ -479,6 +479,13 @@ class TestGoal:
                 r.append(g)
         assert len(r) == 4
 
+    def test_generate_goals2(self) -> None:
+        """Tests if generate_goals generates goals with the same type """
+        goals = generate_goals(4)
+        _type = type(goals[0])
+        for g in goals:
+            assert _type == type(g)
+
     def test__grid(self, flattened_board_16x16, visited_board_16x16) -> None:
         """Test that _grid works properly"""
         v = _grid(flattened_board_16x16)

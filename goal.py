@@ -27,6 +27,8 @@ from typing import List, Tuple, Union
 from block import Block
 from settings import colour_name, COLOUR_LIST
 
+def _instantiate_goal(goal_type: str) -> Goal:
+    """Returns an instance of <goal_type>"""
 
 def generate_goals(num_goals: int) -> List[Goal]:
     """Return a randomly generated list of goals with length num_goals.
@@ -43,25 +45,27 @@ def generate_goals(num_goals: int) -> List[Goal]:
     random.shuffle(colours)
     result = []
 
+    # choose a random goal type
+    chosen_g = random.choice(goals)
+
     # TT: colour list of identical colours
     for i in range(num_goals):
-        # choose a random goal type
-        chosen_g = random.choice(goals)
+
         if not result:
             if chosen_g == BlobGoal:
-                chosen_g = BlobGoal(colours[i])
+                g = BlobGoal(colours[i])
             else:
-                chosen_g = PerimeterGoal(colours[i])
-            # Goal.__init__(chosen_g, colours[i])
-            result.append(chosen_g)
+                g = PerimeterGoal(colours[i])
+
+            result.append(g)
 
         # check if color already in list
         elif result[i - 1].colour != colours[i]:
             if chosen_g == BlobGoal:
-                chosen_g = BlobGoal(colours[i])
+                g = BlobGoal(colours[i])
             else:
-                chosen_g = PerimeterGoal(colours[i])
-            result.append(chosen_g)
+                g = PerimeterGoal(colours[i])
+            result.append(g)
 
     return result
 

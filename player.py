@@ -299,17 +299,31 @@ class RandomPlayer(Player):
             # create copy of the board
             copy = board.create_copy()
             # randomly choose block and level in  board
-            block = _get_random_blocky(copy)
+
             # randomly choose action
             actions = [ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE,
                        SWAP_HORIZONTAL, SWAP_VERTICAL, SMASH, COMBINE, PAINT]
             m = _get_random_action(actions)
-            if self._check_action_validity(m, block):
-                move = _create_move(m, block)
-                self._proceed = False  # Must set to False before returning!
-                return move
-            else:
-                return self.generate_move(board)
+
+            valid = False
+            while not valid:
+                block = _get_random_blocky(copy)
+                m = _get_random_action(actions)
+
+                if self._check_action_validity(m, block):
+                    # valid = True
+                    move = _create_move(m, _get_block(board, block.position,
+                                                      block.level))
+                    self._proceed = False  # Must set to False before returning!
+                    return move
+
+            # if self._check_action_validity(m, block):
+            #     move = _create_move(m, block)
+            #     self._proceed = False  # Must set to False before returning!
+            #     return move
+            # return self.generate_move(board)
+
+
 
 
 class SmartPlayer(Player):
