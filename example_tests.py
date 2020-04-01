@@ -68,6 +68,13 @@ def child_block() -> Block:
     """
     return Block((0, 0), 750, COLOUR_LIST[0], 0, 0)
 
+@pytest.fixture
+def board_no_children() -> Block:
+    """Create a reference board with a size of 750 and a max_depth of 2.
+    """
+    # Level 0
+    board = Block((0, 0), 750, COLOUR_LIST[1], 0, 2)
+    return board
 
 @pytest.fixture
 def board_16x16() -> Block:
@@ -372,6 +379,14 @@ class TestBlock:
     mean you have a fully working implementation of the Block class.
     """
 
+    def test_smashable(self, board_no_children) -> None:
+        b = board_no_children.smashable()
+        assert b
+
+    def test_not_smashable(self, board_16x16) -> None:
+        b = board_16x16.smashable()
+        assert not b
+
     def test_smash_on_child(self, child_block) -> None:
         """Test that a child block cannot be smashed.
         """
@@ -417,6 +432,14 @@ class TestBlock:
         board_16x16.swap(1)
         assert board_16x16 == board_16x16_swap1
 
+    def test_swap_no_children(self, board_no_children) -> None:
+        """Test that swap does not work with no children.
+        """
+        b = board_no_children.swap(0)
+        assert not b
+        c = board_no_children.swap(1)
+        assert not c
+
     def test_rotate1(self, board_16x16, board_16x16_rotate1) -> None:
         """Test that the top-right block of reference board on level 1 can be
         correctly rotated clockwise.
@@ -431,6 +454,14 @@ class TestBlock:
         board_16x16.children[0].rotate(3)
         assert board_16x16 == board_16x16_rotate3
 
+    def test_rotate_no_children(self, board_no_children) -> None:
+        """Test that rotate does not work without children.
+        """
+        b = board_no_children.rotate(3)
+        assert not b
+        c = board_no_children.rotate(1)
+        assert not c
+
     def test_paint(self, board_16x16, board_16x16_paint) -> None:
         """Tests that paint works on the top right block of reference board on
         level 2.
@@ -438,11 +469,33 @@ class TestBlock:
         board_16x16.children[0].children[0].paint(COLOUR_LIST[3])
         assert board_16x16 == board_16x16_paint
 
+    def test_paint_false(self, board_16x16, board_16x16_paint) -> None:
+        """Tests that paint works on the top right block of reference board on
+        level 1.
+        """
+        board_16x16.children[0].paint(COLOUR_LIST[3])
+        assert not board_16x16 == board_16x16_paint
+
     def test_combine(self, board_16x16, board_16x16_combine) -> None:
         """Tests that combine works on the top right block of reference bord on
         level 1. """
         board_16x16.children[0].combine()
         assert board_16x16 == board_16x16_combine
+
+    def test_combine_no_children(self, board_no_children) -> None:
+        """Test that the reference board can be correctly swapped along the
+        horizontal plane.
+        """
+        b = board_no_children.combine()
+        assert not b
+
+    def test_combine_no_majority(self, board_16x16) -> None:
+        """Tests that combine works on the top right block of reference bord on
+        level 1. """
+        b = board_16x16.combine()
+        assert not b
+        c =  board_16x16.children[1].combine()
+        assert not c
 
     def test_create_copy(self, board_16x16, board_16x16_copy) -> None:
         """Tests that combine works on the top right block of reference bord on
