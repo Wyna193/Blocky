@@ -224,6 +224,35 @@ def visited_board_16x16() -> List[List[int]]:
         [-1, -1, -1, -1]
     ]
 
+@pytest.fixture
+def board_16x16_perimeter() -> Block:
+    """Create a reference board with a size of 750 and a max_depth of 2.
+    """
+    # Level 0
+    board = Block((0, 0), 750, None, 0, 2)
+
+    # Level 1
+    colours = [None, None, None, None]
+    set_children(board, colours)
+
+    # Level 2
+    colours0 = [COLOUR_LIST[2], COLOUR_LIST[2], COLOUR_LIST[1], COLOUR_LIST[2]]
+    set_children(board.children[0], colours0)
+
+    colours1 = [COLOUR_LIST[2], COLOUR_LIST[2], COLOUR_LIST[2], COLOUR_LIST[0]]
+    set_children(board.children[1], colours1)
+
+    colours2 = [COLOUR_LIST[1], COLOUR_LIST[2], COLOUR_LIST[2], COLOUR_LIST[2]]
+    set_children(board.children[2], colours2)
+
+    colours3 = [COLOUR_LIST[2], COLOUR_LIST[3], COLOUR_LIST[2], COLOUR_LIST[2]]
+    set_children(board.children[3], colours3)
+
+    return board
+
+# =============================================================================
+
+
 def test_block_to_squares_leaf(child_block) -> None:
     """Test that a board with only one block can be correctly trasnlated into
     a square that would be rendered onto the screen.
@@ -251,6 +280,9 @@ def test_block_to_squares_reference(board_16x16) -> None:
                 }
 
     assert squares == expected
+
+# =============================================================================
+
 
 
 class TestRender:
@@ -469,6 +501,20 @@ class TestGoal:
         for colour, expected in correct_scores:
             goal = PerimeterGoal(colour)
             assert goal.score(board_16x16) == expected
+
+    def test_perimeter_goal_no_middle(self, board_16x16_perimeter):
+        """Tests that the blobs in the middle are not counted to the score"""
+        correct_scores = [
+            (COLOUR_LIST[0], 0),
+            (COLOUR_LIST[1], 0),
+            (COLOUR_LIST[2], 16),
+            (COLOUR_LIST[3], 0)
+        ]
+
+        # Set up a goal for each colour and check results.
+        for colour, expected in correct_scores:
+            goal = PerimeterGoal(colour)
+            assert goal.score(board_16x16_perimeter) == expected
 
     def test_generate_goals(self) -> None:
         """Tests generate_goal, testing that there are no duplicates """
