@@ -311,12 +311,11 @@ class RandomPlayer(Player):
                 m = _get_random_action(actions)
 
                 if self._check_action_validity(m, block):
-                    # valid = True
+                    valid = True
                     move = _create_move(m, _get_block(board, block.position,
                                                       block.level))
                     self._proceed = False  # Must set to False before returning!
                     return move
-
 
 
 

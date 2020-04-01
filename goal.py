@@ -27,8 +27,17 @@ from typing import List, Tuple, Union
 from block import Block
 from settings import colour_name, COLOUR_LIST
 
-def _instantiate_goal(goal_type: str) -> Goal:
-    """Returns an instance of <goal_type>"""
+
+def _instantiate_goal(goal_type: str, colour: Tuple[int, int, int]) -> Goal:
+    """Returns an instance of <goal_type> with the given <colour>.
+    """
+    if goal_type == BlobGoal:
+        g = BlobGoal(colour)
+    else:
+        g = PerimeterGoal(colour)
+
+    return g
+
 
 def generate_goals(num_goals: int) -> List[Goal]:
     """Return a randomly generated list of goals with length num_goals.
@@ -52,26 +61,19 @@ def generate_goals(num_goals: int) -> List[Goal]:
     for i in range(num_goals):
 
         if not result:
-            if chosen_g == BlobGoal:
-                g = BlobGoal(colours[i])
-            else:
-                g = PerimeterGoal(colours[i])
-
+            g = _instantiate_goal(chosen_g, colours[i])
             result.append(g)
 
         # check if color already in list
         elif result[i - 1].colour != colours[i]:
-            if chosen_g == BlobGoal:
-                g = BlobGoal(colours[i])
-            else:
-                g = PerimeterGoal(colours[i])
+            g = _instantiate_goal(chosen_g, colours[i])
             result.append(g)
 
     return result
 
 
 def _grid(flattened: List[List[Tuple[int, int, int]]]) -> List[List[int]]:
-    """Returns a flattened block with -1 in the position of each cell."""
+    """Returns a <flattened> block with -1 in the position of each cell."""
     r = []
     for _ in flattened:
         column = []
@@ -197,8 +199,11 @@ class PerimeterGoal(Goal):
         b = _flatten(board)
         score = 0
         for i in range(len(b)):
+            if len(b[i]) == 1:
+                score += 4
+
             # Check if colour is in a corner spot
-            if i in (0, len(b) - 1):
+            elif i in (0, len(b) - 1):
                 score += b[i].count(self.colour)
                 if b[i][0] == self.colour:
                     score += 1
@@ -255,7 +260,6 @@ class BlobGoal(Goal):
 
         return max(_max)
 
-
     def _undiscovered_blob_size(self, pos: Tuple[int, int],
                                 board: List[List[Tuple[int, int, int]]],
                                 visited: List[List[int]]) -> int:
@@ -292,11 +296,11 @@ class BlobGoal(Goal):
         else:
             # We know that pos is of target colour
             visited[i][j] = 1
-            return 1 + self._undiscovered_blob_size((i+1, j), board, visited) +\
-                self._undiscovered_blob_size((i-1, j), board, visited) + \
-                self._undiscovered_blob_size((i, j+1), board, visited) + \
-                self._undiscovered_blob_size((i, j-1), board, visited)
-
+            return 1 + \
+                   self._undiscovered_blob_size((i + 1, j), board, visited) + \
+                   self._undiscovered_blob_size((i - 1, j), board, visited) + \
+                   self._undiscovered_blob_size((i, j + 1), board, visited) + \
+                   self._undiscovered_blob_size((i, j - 1), board, visited)
 
     def description(self) -> str:
         # TODO: Implement me

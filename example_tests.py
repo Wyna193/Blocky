@@ -34,7 +34,8 @@ from goal import BlobGoal, PerimeterGoal, _flatten, generate_goals, _grid
 from player import Player, _get_block, create_players
 from renderer import Renderer
 from settings import COLOUR_LIST
-
+from actions import KEY_ACTION, ROTATE_CLOCKWISE, ROTATE_COUNTER_CLOCKWISE, \
+    SWAP_HORIZONTAL, SWAP_VERTICAL, SMASH, PASS, PAINT, COMBINE
 
 def set_children(block: Block, colours: List[Optional[Tuple[int, int, int]]]) \
         -> None:
@@ -74,6 +75,12 @@ def board_no_children() -> Block:
     """
     # Level 0
     board = Block((0, 0), 750, COLOUR_LIST[1], 0, 2)
+    return board
+
+@pytest.fixture
+def board_1x1() -> Block:
+    """Create a reference board with a size of 750 that is at max_depth"""
+    board = Block((0, 0), 375, COLOUR_LIST[1], 0, 0)
     return board
 
 @pytest.fixture
@@ -228,7 +235,28 @@ def flattened_board_16x16() -> List[List[Tuple[int, int, int]]]:
         [COLOUR_LIST[0], COLOUR_LIST[3], COLOUR_LIST[3], COLOUR_LIST[3]]
     ]
 
-
+@pytest.fixture
+def flattened_board_16x16_max() -> List[List[Tuple[int, int, int]]]:
+    """Create a list of the unit cells inside the reference board."""
+    a, b, c, d = COLOUR_LIST[0], COLOUR_LIST[1], COLOUR_LIST[2], COLOUR_LIST[3]
+    return [
+        [c, c, c, c, c, c, c, c, b, b, b, b, b, b, b, b],
+        [c, c, c, c, c, c, c, c, b, b, b, b, b, b, b, b],
+        [c, c, c, c, c, c, c, c, b, b, b, b, b, b, b, b],
+        [c, c, c, c, c, c, c, c, b, b, b, b, b, b, b, b],
+        [c, c, c, c, c, c, c, c, b, b, b, b, b, b, b, b],
+        [c, c, c, c, c, c, c, c, b, b, b, b, b, b, b, b],
+        [c, c, c, c, c, c, c, c, b, b, b, b, b, b, b, b],
+        [c, c, c, c, c, c, c, c, b, b, b, b, b, b, b, b],
+        [b, b, b, b, b, b, b, b, d, d, d, d, d, d, d, d],
+        [b, b, b, b, b, b, b, b, d, d, d, d, d, d, d, d],
+        [b, b, b, b, b, b, b, b, d, d, d, d, d, d, d, d],
+        [b, b, b, b, b, b, b, b, d, d, d, d, d, d, d, d],
+        [a, a, a, a, d, d, d, d, d, d, d, d, d, d, d, d],
+        [a, a, a, a, d, d, d, d, d, d, d, d, d, d, d, d],
+        [a, a, a, a, d, d, d, d, d, d, d, d, d, d, d, d],
+        [a, a, a, a, d, d, d, d, d, d, d, d, d, d, d, d]
+    ]
 @pytest.fixture
 def visited_board_16x16() -> List[List[int]]:
     """Create a list of -1 parallel to a flattened board."""
@@ -378,7 +406,18 @@ class TestBlock:
     NOTE: this is a small subset of tests - just because you pass them does NOT
     mean you have a fully working implementation of the Block class.
     """
+    # Helper tests
+    def test_child_size(self, board_1x1) -> None:
+        """Tests that child size rounds size properly."""
+        assert board_1x1._child_size() == 188
 
+    def test_children_positions(self, board_1x1) -> None:
+        """Tests that the correct children positions are returned."""
+        assert board_1x1._children_positions() == [(188, 0), (0, 0),
+                                                   (0, 188), (188, 188)]
+
+
+    # Main methods
     def test_smashable(self, board_no_children) -> None:
         b = board_no_children.smashable()
         assert b
@@ -447,7 +486,7 @@ class TestBlock:
         board_16x16.children[0].rotate(1)
         assert board_16x16 == board_16x16_rotate1
 
-    def test_rotate3(self, board_16x16, board_16x16_rotate3) -> None:
+    def test_rotate2(self, board_16x16, board_16x16_rotate3) -> None:
         """Test that the top-right block of reference board on level 1 can be
         correctly rotated counter-clockwise.
         """
@@ -498,8 +537,8 @@ class TestBlock:
         assert not c
 
     def test_create_copy(self, board_16x16, board_16x16_copy) -> None:
-        """Tests that combine works on the top right block of reference bord on
-        level 1. """
+        """Tests if create_copy creates a deep copy of this block. This also
+         checks that __eq__ works properly."""
         board_16x16.create_copy()
         assert board_16x16 == board_16x16_copy
 
@@ -543,6 +582,18 @@ class TestPlayer:
         assert hrsp[2]._difficulty == 3
         assert hrsp[3]._difficulty == 4
 
+    def test_generate_move_mutate(self, board_16x16) -> None:
+        """Tests the generate_move does not mutate the board"""
+        playas = create_players(0, 1, [4])
+        b = board_16x16.create_copy()
+
+        # test the randie
+        playas[0].generate_move(board_16x16)
+        assert board_16x16 == b
+
+        # test the nerd
+        playas[1].generate_move(board_16x16)
+        assert board_16x16 == b
 
 class TestGoal:
     """A collection of methods for testing the sub-classes of Goal.
@@ -563,11 +614,15 @@ class TestGoal:
 
         assert result == flattened_board_16x16
 
-    def test_block_flatten_2(self, board_16x16, flattened_board_16x16) -> None:
-        """Test that flattening the reference board results in the expected list
-        of colours.
+    def test_block_flatten_unit_cell(self, board_1x1) -> None:
+        """Test that flatten correctly flattens a unit cell."""
+        assert _flatten(board_1x1) == [[board_1x1.colour]]
+
+    def test_block_flatten_max_depth_4(self, board_16x16,
+                                       flattened_board_16x16_max) -> None:
+        """Test that flattening the reference board with a max_depth of 4.
         """
-        board = Block((0, 0), 750, None, 0, 3)
+        board = Block((0, 0), 750, None, 0, 4)
 
         # Level 1
         colours = [None, COLOUR_LIST[2], COLOUR_LIST[1], COLOUR_LIST[3]]
@@ -579,9 +634,13 @@ class TestGoal:
         set_children(board.children[0], colours)
 
         result = _flatten(board)
-        assert len(result) == 8
+        assert len(result) == 16
+
+        # check if its a square
         for sublist in result:
             assert len(result) == len(sublist)
+
+        assert result == flattened_board_16x16_max
 
     def test_blob_goal(self, board_16x16) -> None:
         correct_scores = [
@@ -636,6 +695,10 @@ class TestGoal:
         for colour, expected in correct_scores:
             goal = PerimeterGoal(colour)
             assert goal.score(board_16x16) == expected
+
+    def test_perimeter_goal_1x1_block(self, board_1x1):
+        goal = PerimeterGoal(COLOUR_LIST[1])
+        assert goal.score(board_1x1) == 4
 
     def test_perimeter_goal_no_middle(self, board_16x16_perimeter):
         """Tests that the blobs in the middle are not counted to the score"""
